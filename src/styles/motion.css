@@ -1,0 +1,109 @@
+/* Motion primitives — CSS transitions + one IntersectionObserver.
+ * Tier 1-2 of the animation ladder: no motion library (see L4 in
+ * odd/tasks/landing-foundation.md). Only transform/opacity are animated. */
+
+@theme {
+	--animate-fade-up: fade-up var(--duration-enter) var(--ease-out-soft) both;
+	--animate-fade-in: fade-in var(--duration-enter) var(--ease-out-soft) both;
+	--animate-scale-in: scale-in var(--duration-base) var(--ease-out-soft) both;
+
+	@keyframes fade-up {
+		from {
+			opacity: 0;
+			transform: translateY(var(--reveal-y));
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes scale-in {
+		from {
+			opacity: 0;
+			transform: scale(0.96);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
+	}
+}
+
+@layer components {
+	/* Reveal-on-scroll. The hidden state only exists once the observer booted
+	 * (`motion-ready` on <html>), so a JS failure never hides content. */
+	.reveal {
+		opacity: 1;
+		transform: none;
+	}
+
+	.motion-ready .reveal {
+		opacity: 0;
+		transform: translateY(var(--reveal-y));
+		transition:
+			opacity var(--duration-enter) var(--ease-out-soft),
+			transform var(--duration-enter) var(--ease-out-soft);
+		transition-delay: calc(var(--i, 0) * var(--reveal-stagger));
+		will-change: opacity, transform;
+	}
+
+	.motion-ready .reveal.is-visible {
+		opacity: 1;
+		transform: none;
+		will-change: auto;
+	}
+
+	/* Press and hover feedback for counter and catalogue targets. */
+	.press {
+		transition: transform var(--duration-micro) var(--ease-out-soft);
+	}
+
+	.press:active {
+		transform: scale(0.985);
+	}
+
+	.lift {
+		transition:
+			transform var(--duration-base) var(--ease-out-soft),
+			box-shadow var(--duration-base) var(--ease-out-soft);
+	}
+
+	@media (hover: hover) {
+		.lift:hover {
+			transform: translateY(-2px);
+			box-shadow: var(--shadow-counter);
+		}
+	}
+}
+
+/* Global reduced-motion floor. Effects that carry meaning land on their final
+ * state instead of disappearing. */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	::before,
+	::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	.motion-ready .reveal {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
+	.lift:hover {
+		transform: none !important;
+	}
+}

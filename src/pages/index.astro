@@ -1,0 +1,26 @@
+---
+/**
+ * Landing shell. Only the global layer exists today; the section components
+ * from the Stitch design land here next (see odd/tasks/landing-foundation.md).
+ */
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Layout>
+	<main id="contenido" class="mx-auto grid w-full max-w-page gap-6 px-gutter py-24">
+		<p class="font-mono text-correlative uppercase text-muted">Topica</p>
+		<h1 class="max-w-2xl text-headline-xl">Tu catálogo, inventario y envíos</h1>
+		<p class="max-w-prose text-body-lg text-muted">
+			La capa global está lista: tokens, tipografía, iconos y movimiento. Sigue la construcción de
+			las secciones de la landing.
+		</p>
+		<a
+			href="/styleguide"
+			class="press inline-flex h-touch w-fit items-center gap-2 rounded-md bg-forest px-6 text-label-lg text-paper shadow-hairline"
+		>
+			<Icon name="lucide:palette" size={18} />
+			Ver la base de diseño
+		</a>
+	</main>
+</Layout>

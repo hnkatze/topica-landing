@@ -1,0 +1,232 @@
+---
+/**
+ * Foundation preview. Not the landing: it renders every token, font, shadow and
+ * motion primitive so the global layer can be verified visually before any
+ * section component exists.
+ */
+import Layout from '../layouts/Layout.astro';
+import Icon from '../components/Icon.astro';
+
+const brand = [
+	{ token: 'forest', hex: '#15803D', use: 'Primario · Cobrar / Confirmar' },
+	{ token: 'forest-deep', hex: '#14532D', use: 'Primario activo' },
+	{ token: 'kraft', hex: '#8B5A2B', use: 'Secundario · Despachar' },
+	{ token: 'manila', hex: '#D4A373', use: 'Terciario · waybills' },
+	{ token: 'ink', hex: '#0F172A', use: 'Neutral oscuro' },
+	{ token: 'muted', hex: '#3F493F', use: 'Texto secundario' },
+];
+
+const surfaces = [
+	{ token: 'linen', hex: '#FAF9F6', use: 'L0 canvas' },
+	{ token: 'paper', hex: '#FFFFFF', use: 'L1 tarjeta' },
+	{ token: 'crate', hex: '#F5EBE1', use: 'L2 logística' },
+	{ token: 'line', hex: '#E2E8F0', use: 'Borde estructural' },
+	{ token: 'line-strong', hex: '#CBD5E1', use: 'Borde de input' },
+	{ token: 'divider', hex: '#F1F5F9', use: 'Divisores de recibo' },
+	{ token: 'crate-line', hex: '#E8D9C8', use: 'Marco logístico' },
+	{ token: 'disabled', hex: '#94A3B8', use: 'Control inactivo' },
+];
+
+const semantics = [
+	{ token: 'whatsapp', hex: '#25D366', use: 'Canal WhatsApp' },
+	{ token: 'paid', hex: '#DCFCE7', use: 'Pagado · fondo' },
+	{ token: 'paid-line', hex: '#86EFAC', use: 'Pagado · borde' },
+	{ token: 'pending', hex: '#D97706', use: 'Contra entrega' },
+	{ token: 'pending-ink', hex: '#92400E', use: 'Pendiente · texto' },
+	{ token: 'danger', hex: '#DC2626', use: 'Falta crítica' },
+];
+
+const typeScale = [
+	{ cls: 'text-headline-xl', label: 'headline-xl · Jakarta 32/40 · 800', text: 'Tu catálogo, inventario y envíos' },
+	{ cls: 'text-headline-xl-mobile', label: 'headline-xl-mobile · Jakarta 26/32 · 800', text: 'Tu catálogo, inventario y envíos' },
+	{ cls: 'text-headline-lg', label: 'headline-lg · Jakarta 24/32 · 700', text: 'Cobra sin cuadernos' },
+	{ cls: 'text-headline-md', label: 'headline-md · Jakarta 20/28 · 600', text: 'Pedidos del día' },
+	{ cls: 'text-headline-sm', label: 'headline-sm · Jakarta 18/24 · 600', text: 'Empacado · En ruta' },
+	{ cls: 'text-body-lg', label: 'body-lg · Inter 16/24 · 400', text: 'Registra la venta desde el mostrador y comparte el recibo por WhatsApp.' },
+	{ cls: 'text-body-md', label: 'body-md · Inter 14/20 · 400', text: 'Inventario ajustado al instante, sin hojas de cálculo.' },
+	{ cls: 'text-body-sm', label: 'body-sm · Inter 12/16 · 400', text: 'Precios en lempiras, redondeados a dos decimales.' },
+	{ cls: 'text-label-lg', label: 'label-lg · Inter 14/20 · 600', text: 'Contra entrega' },
+	{ cls: 'text-label-md', label: 'label-md · Inter 12/16 · 500', text: 'Sin existencias' },
+	{ cls: 'font-mono text-correlative uppercase', label: 'mono-correlative · JetBrains 13/18 · 600', text: 'CAI 8F3A-2C1B-9D4E' },
+	{ cls: 'font-mono text-currency', label: 'mono-currency · JetBrains 22/28 · 700', text: 'L. 1,450.00' },
+];
+
+const icons = [
+	'lucide:shopping-cart',
+	'lucide:package',
+	'lucide:truck',
+	'lucide:receipt',
+	'lucide:box',
+	'lucide:check',
+	'lucide:store',
+	'lucide:chart-no-axes-column',
+	'simple-icons:whatsapp',
+];
+---
+
+<Layout
+	title="Foundation · Topica"
+	description="Vista previa de tokens, tipografía, iconos y movimiento del sistema Mercado Kraft."
+>
+	<meta slot="head" name="robots" content="noindex" />
+
+	<main id="contenido" class="mx-auto w-full max-w-page px-gutter py-16">
+		<header class="mb-16">
+			<p class="font-mono text-correlative uppercase text-muted">Mercado Kraft · foundation</p>
+			<h1 class="mt-3 text-headline-xl text-ink">Capa global</h1>
+			<p class="mt-4 max-w-prose text-body-lg text-muted">
+				Tokens, tipografía, iconos y movimiento extraídos del sistema de diseño en Stitch. Las
+				secciones de la landing se construyen sobre esta base.
+			</p>
+		</header>
+
+		<section class="mb-16" data-reveal>
+			<h2 class="text-headline-lg">Color</h2>
+			<h3 class="mt-6 text-headline-sm text-muted">Marca</h3>
+			<ul class="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
+				{
+					brand.map((c) => (
+						<li class="rounded-lg border border-line bg-paper p-3 shadow-card">
+							<div class="h-14 rounded-md border border-line" style={`background:${c.hex}`} />
+							<p class="mt-3 font-mono text-correlative text-ink">{c.token}</p>
+							<p class="text-body-sm text-muted">{c.hex}</p>
+							<p class="mt-1 text-label-md text-muted">{c.use}</p>
+						</li>
+					))
+				}
+			</ul>
+
+			<h3 class="mt-8 text-headline-sm text-muted">Superficies</h3>
+			<ul class="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4">
+				{
+					surfaces.map((c) => (
+						<li class="rounded-lg border border-line bg-paper p-3 shadow-card">
+							<div class="h-10 rounded-md border border-line" style={`background:${c.hex}`} />
+							<p class="mt-3 font-mono text-correlative text-ink">{c.token}</p>
+							<p class="text-body-sm text-muted">{c.hex}</p>
+						</li>
+					))
+				}
+			</ul>
+
+			<h3 class="mt-8 text-headline-sm text-muted">Estados</h3>
+			<ul class="mt-3 grid grid-cols-2 gap-3 md:grid-cols-3">
+				{
+					semantics.map((c) => (
+						<li class="rounded-lg border border-line bg-paper p-3 shadow-card">
+							<div class="h-10 rounded-md border border-line" style={`background:${c.hex}`} />
+							<p class="mt-3 font-mono text-correlative text-ink">{c.token}</p>
+							<p class="text-body-sm text-muted">{c.use}</p>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section class="mb-16" data-reveal>
+			<h2 class="text-headline-lg">Tipografía</h2>
+			<ul class="mt-6 space-y-5">
+				{
+					typeScale.map((t) => (
+						<li class="border-b border-divider pb-4">
+							<p class="font-mono text-correlative uppercase text-muted">{t.label}</p>
+							<p class={`mt-1 text-ink ${t.cls}`}>{t.text}</p>
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section class="mb-16" data-reveal>
+			<h2 class="text-headline-lg">Forma y elevación</h2>
+			<div class="mt-6 grid gap-4 md:grid-cols-3">
+				<div class="rounded-lg border border-line bg-paper p-5 shadow-card">
+					<p class="text-headline-sm">L1 · Tarjeta</p>
+					<p class="mt-2 text-body-md text-muted">border-line + shadow-card</p>
+				</div>
+				<div class="rounded-xl border border-crate-line bg-crate p-5">
+					<p class="text-headline-sm">L2 · Logística</p>
+					<p class="mt-2 font-mono text-correlative text-kraft">TRK-004822</p>
+					<hr class="my-3 border-t border-dashed border-manila" />
+					<p class="text-body-sm text-kraft">Waybill de despacho</p>
+				</div>
+				<div class="rounded-lg border border-line-strong bg-paper p-5 shadow-counter">
+					<p class="text-headline-sm">L3 · Acción fija</p>
+					<p class="mt-2 text-body-md text-muted">shadow-counter</p>
+				</div>
+			</div>
+			<div class="mt-6 flex flex-wrap items-end gap-4">
+				<div class="grid h-16 w-24 place-items-center rounded-xs bg-forest text-label-md text-paper">xs 2px</div>
+				<div class="grid h-16 w-24 place-items-center rounded-sm bg-forest text-label-md text-paper">sm 2px</div>
+				<div class="grid h-16 w-24 place-items-center rounded-md bg-forest text-label-md text-paper">md 6px</div>
+				<div class="grid h-16 w-24 place-items-center rounded-lg bg-forest text-label-md text-paper">lg 8px</div>
+				<div class="grid h-16 w-24 place-items-center rounded-xl bg-forest text-label-md text-paper">xl 12px</div>
+			</div>
+		</section>
+
+		<section class="mb-16" data-reveal>
+			<h2 class="text-headline-lg">Iconos</h2>
+			<p class="mt-2 text-body-md text-muted">lucide para UI · simple-icons para marcas</p>
+			<ul class="mt-4 flex flex-wrap gap-3">
+				{
+					icons.map((name) => (
+						<li class="grid size-12 place-items-center rounded-md border border-line bg-paper text-ink shadow-card">
+							<Icon name={name} size={22} />
+						</li>
+					))
+				}
+			</ul>
+		</section>
+
+		<section data-reveal>
+			<h2 class="text-headline-lg">Movimiento</h2>
+			<p class="mt-2 max-w-prose text-body-md text-muted">
+				CSS + IntersectionObserver. Cada bloque entra una sola vez; con
+				<code class="rounded-xs bg-divider px-1">prefers-reduced-motion</code> el estado final se
+				muestra de inmediato.
+			</p>
+			<div class="mt-6 grid gap-3 md:grid-cols-3">
+				{
+					[0, 1, 2].map((i) => (
+						<div
+							class="reveal rounded-lg border border-line bg-paper p-5 shadow-card"
+							data-reveal
+							style={`--i:${i}`}
+						>
+							<p class="font-mono text-correlative text-muted">--i: {i}</p>
+							<p class="mt-1 text-headline-sm">Bloque escalonado</p>
+						</div>
+					))
+				}
+			</div>
+			<div class="mt-6 flex flex-wrap gap-3">
+				<span class="press grid h-touch place-items-center rounded-md bg-forest px-6 text-label-lg text-paper">
+					Primario · Cobrar
+				</span>
+				<span class="press grid h-touch place-items-center rounded-md bg-kraft px-6 text-label-lg text-paper">
+					Logística · Despachar
+				</span>
+				<span class="press grid h-touch place-items-center rounded-md bg-whatsapp px-6 text-label-lg text-paper">
+					Compartir por WhatsApp
+				</span>
+				<span class="press grid h-touch place-items-center rounded-md border border-line-strong px-6 text-label-lg text-ink">
+					Secundario
+				</span>
+			</div>
+			<div class="mt-6 grid gap-3 md:grid-cols-3">
+				<div class="lift rounded-lg border border-line bg-paper p-5 shadow-card">
+					<p class="text-headline-sm">.lift</p>
+					<p class="text-body-sm text-muted">Hover eleva y proyecta</p>
+				</div>
+				<div class="animate-fade-in rounded-lg border border-line bg-paper p-5 shadow-card">
+					<p class="text-headline-sm">animate-fade-in</p>
+					<p class="text-body-sm text-muted">Entrada al cargar</p>
+				</div>
+				<div class="animate-scale-in rounded-lg border border-line bg-paper p-5 shadow-card">
+					<p class="text-headline-sm">animate-scale-in</p>
+					<p class="text-body-sm text-muted">Entrada con escala</p>
+				</div>
+			</div>
+		</section>
+	</main>
+</Layout>
