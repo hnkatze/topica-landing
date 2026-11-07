@@ -1,0 +1,139 @@
+---
+/**
+ * Fixed header. Ported from the Stitch export (`parts/00.html`, `parts/01.html`)
+ * with two deviations, both logged in the task file:
+ *
+ * - Copy comes from `src/content/landing.ts`, never from the export.
+ * - The export has no mobile navigation at all. The disclosure button and panel
+ *   below close that gap; `src/scripts/nav.ts` owns the behaviour.
+ */
+import Icon from '../Icon.astro';
+import { brand, nav } from '../../content/landing';
+
+const linkClass =
+	'inline-flex h-12 items-center whitespace-nowrap rounded-lg px-2 text-label-lg text-label-lg text-on-surface-variant transition-colors duration-200 hover:bg-surface-container/70 hover:text-on-surface xl:px-space-sm';
+const mobileLinkClass =
+	'flex min-h-12 items-center rounded-lg px-space-sm text-body-lg text-on-surface transition-colors duration-200 hover:bg-surface-container/70';
+---
+
+<header
+	data-nav
+	class="fixed inset-x-0 top-0 z-50 w-full border-b border-surface-high/60 bg-surface/90 backdrop-blur-xl transition-colors duration-300"
+>
+	<div class="mx-auto flex h-20 max-w-page items-center justify-between gap-space-sm px-margin">
+		<a
+			href="#contenido"
+			class="flex shrink-0 items-center gap-space-sm rounded-xl p-1 transition-opacity duration-300 hover:opacity-90"
+		>
+			<span
+				aria-hidden="true"
+				class="grid size-10 place-items-center rounded-xl bg-primary-container text-headline-md text-on-primary tracking-tight shadow-sm"
+			>
+				{brand.monogram}
+			</span>
+			<span class="flex flex-col">
+				<span class="text-headline-sm leading-none tracking-tight text-on-surface">{brand.name}</span>
+				<span class="mt-1 text-correlative uppercase leading-none tracking-wider text-tertiary">
+					{brand.tagline}
+				</span>
+			</span>
+		</a>
+
+		<nav aria-label="Secciones de la página" class="hidden items-center gap-1 lg:flex xl:gap-space-md">
+			{
+				nav.links.map((link) => (
+					<a data-nav-link href={link.href} class={linkClass}>
+						{link.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<div class="flex items-center gap-space-sm">
+			<a
+				href={nav.secondaryCta.href}
+				class="hidden h-12 items-center justify-center rounded-xl px-space-md text-label-lg text-label-lg text-on-surface transition-colors duration-200 hover:bg-surface-container-high lg:inline-flex"
+			>
+				{nav.secondaryCta.label}
+			</a>
+			<a
+				href={nav.primaryCta.href}
+				class="btn-shimmer hidden h-12 items-center justify-center rounded-xl bg-primary-container px-space-lg text-label-lg text-label-lg text-on-primary shadow-sm transition-colors duration-300 hover:bg-primary sm:inline-flex"
+			>
+				{nav.primaryCta.label}
+			</a>
+			<button
+				type="button"
+				data-nav-toggle
+				aria-expanded="false"
+				aria-controls="nav-mobile-panel"
+				aria-label="Abrir menú"
+				class="nav-toggle inline-flex size-12 items-center justify-center rounded-xl text-on-surface transition-colors duration-200 hover:bg-surface-container lg:hidden"
+			>
+				<Icon name="material-symbols:menu" size={24} class="nav-toggle-open" />
+				<Icon name="material-symbols:close" size={24} class="nav-toggle-close" />
+			</button>
+		</div>
+	</div>
+
+	<div
+		id="nav-mobile-panel"
+		data-nav-panel
+		hidden
+		class="absolute inset-x-0 top-full max-h-[calc(100dvh-5rem)] overflow-y-auto border-b border-surface-high/60 bg-surface/95 shadow-paper backdrop-blur-xl lg:hidden"
+	>
+		<nav aria-label="Secciones de la página" class="mx-auto max-w-page px-margin py-space-md">
+			<ul class="flex flex-col">
+				{
+					nav.links.map((link) => (
+						<li>
+							<a data-nav-link href={link.href} class={mobileLinkClass}>
+								{link.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+			<div class="mt-space-md flex flex-col gap-space-sm border-t border-surface-high/60 pt-space-md">
+				<a
+					href={nav.secondaryCta.href}
+					class="inline-flex h-12 items-center justify-center rounded-xl bg-surface-container text-label-lg text-label-lg text-on-surface"
+				>
+					{nav.secondaryCta.label}
+				</a>
+				<a
+					href={nav.primaryCta.href}
+					class="btn-shimmer inline-flex h-12 items-center justify-center rounded-xl bg-primary-container text-label-lg text-label-lg text-on-primary"
+				>
+					{nav.primaryCta.label}
+				</a>
+			</div>
+		</nav>
+	</div>
+</header>
+
+<style>
+	/* Icon swap is CSS-only so no JS is needed to keep it in sync. The icons are
+	 * rendered by the Icon primitive, so their classes are matched globally. */
+	.nav-toggle :global(.nav-toggle-close) {
+		display: none;
+	}
+
+	.nav-toggle[aria-expanded='true'] :global(.nav-toggle-open) {
+		display: none;
+	}
+
+	.nav-toggle[aria-expanded='true'] :global(.nav-toggle-close) {
+		display: block;
+	}
+
+	/* Active section, set from IntersectionObserver in scripts/nav.ts. */
+	[data-nav-link][aria-current='true'] {
+		background-color: var(--color-surface-container);
+		color: var(--color-on-surface);
+	}
+</style>
+
+<script>
+	import '../../scripts/nav';
+</script>

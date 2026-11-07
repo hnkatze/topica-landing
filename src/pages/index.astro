@@ -1,26 +1,77 @@
 ---
-/**
- * Landing shell. Only the global layer exists today; the section components
- * from the Stitch design land here next (see odd/tasks/landing-foundation.md).
- */
 import Layout from '../layouts/Layout.astro';
-import Icon from '../components/Icon.astro';
+import Nav from '../components/sections/Nav.astro';
+import Hero from '../components/sections/Hero.astro';
+import TrustStrip from '../components/sections/TrustStrip.astro';
+import Problem from '../components/sections/Problem.astro';
+import Layers from '../components/sections/Layers.astro';
+import Logistics from '../components/sections/Logistics.astro';
+import Steps from '../components/sections/Steps.astro';
+import Includes from '../components/sections/Includes.astro';
+import Billing from '../components/sections/Billing.astro';
+import Audience from '../components/sections/Audience.astro';
+import Pricing from '../components/sections/Pricing.astro';
+import Faq from '../components/sections/Faq.astro';
+import Demo from '../components/sections/Demo.astro';
+import Footer from '../components/sections/Footer.astro';
+
+import { brand, faq } from '../content/landing';
+
+const site = Astro.site ?? new URL(Astro.url.origin);
+const url = new URL(Astro.url.pathname, site).href;
+
+/* Structured data per the copy spec: Organization + Service + FAQPage. */
+const structuredData = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: brand.name,
+		url,
+		description:
+			'Catálogo, inventario, facturación y envíos programados para comercios que venden por WhatsApp, Instagram o en persona.',
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Service',
+		name: 'Catálogo, inventario, facturación y logística para comercios',
+		provider: { '@type': 'Organization', name: brand.name },
+		areaServed: 'HN',
+		serviceType: 'Comercio electrónico, inventario, facturación y almacenaje',
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: faq.items.map((item) => ({
+			'@type': 'Question',
+			name: item.question,
+			acceptedAnswer: { '@type': 'Answer', text: item.answer },
+		})),
+	},
+];
 ---
 
-<Layout>
-	<main id="contenido" class="mx-auto grid w-full max-w-page gap-6 px-margin py-24">
-		<p class="text-correlative uppercase text-on-surface-variant">Topica</p>
-		<h1 class="max-w-2xl text-hero">Vende en línea sin contratar a nadie.</h1>
-		<p class="max-w-prose text-body-lg text-on-surface-variant">
-			La capa global está lista: tokens, tipografía, iconos y movimiento. Sigue la construcción de
-			las secciones de la landing.
-		</p>
-		<a
-			href="/styleguide"
-			class="press inline-flex h-touch w-fit items-center gap-2 rounded-xl bg-primary-container px-6 text-label-lg text-on-primary shadow-hairline"
-		>
-			<Icon name="material-symbols:palette" size={18} />
-			Ver la base de diseño
-		</a>
+<Layout
+	title={`Tu catálogo, tu inventario y tus envíos en un solo lugar | ${brand.name}`}
+	description="Vende en línea sin contratar a nadie. Catálogo, inventario, facturación en regla y envíos programados desde la bodega. Hecho en Honduras."
+>
+	<script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+	<Nav />
+
+	<main id="contenido" class="w-full pt-20">
+		<Hero />
+		<TrustStrip />
+		<Problem />
+		<Layers />
+		<Logistics />
+		<Steps />
+		<Includes />
+		<Billing />
+		<Audience />
+		<Pricing />
+		<Faq />
+		<Demo />
 	</main>
+
+	<Footer />
 </Layout>

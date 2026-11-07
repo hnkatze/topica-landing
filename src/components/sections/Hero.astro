@@ -1,0 +1,233 @@
+---
+/**
+ * Hero. Ported from the Stitch export (`parts/03.html`): an editorial text
+ * column next to two physical props — a kraft waybill and the panel preview —
+ * that float against each other.
+ *
+ * All copy comes from `src/content/landing.ts`. The export's inline hex values
+ * map onto the design tokens (`bg-kraft-surface`, `text-on-tertiary-fixed`,
+ * `bg-paid` …), so nothing here invents a colour.
+ */
+import Icon from '../Icon.astro';
+import { hero } from '../../content/landing';
+
+/* Barcode geometry: alternating ink bars and gaps, widths in px. Decorative —
+ * the tracking number beside it is the real, readable value. */
+const barcodeBars = [2, 4, 2, 2, 6, 2, 4, 4, 2, 2, 8, 2, 4, 4, 2];
+---
+
+<section class="relative w-full overflow-hidden bg-background px-margin pt-space-xl pb-16">
+	<div class="mx-auto flex max-w-page flex-col items-center gap-space-xl lg:flex-row lg:gap-12">
+		{/* ── Text column ─────────────────────────────────────────────── */}
+		<div class="reveal flex max-w-xl shrink-0 flex-col items-start" data-reveal>
+			<div
+				class="mb-space-md inline-flex items-center gap-space-sm rounded-full border border-outline-variant/30 bg-surface-container px-space-md py-space-xs text-on-surface shadow-sm"
+			>
+				<span
+					aria-hidden="true"
+					class="radar-pulse size-2.5 rounded-full bg-primary text-primary"
+				></span>
+				<span class="text-label-md uppercase tracking-wider text-on-surface">{hero.eyebrow}</span>
+			</div>
+
+			<h1
+				class="mb-space-md text-hero tracking-tight text-on-surface sm:text-[44px] sm:leading-[52px]"
+			>
+				{hero.title}
+			</h1>
+
+			<p class="mb-space-lg max-w-2xl text-body-lg leading-relaxed text-on-surface-variant">
+				{hero.lead}
+			</p>
+
+			<div
+				class="flex w-full flex-col items-stretch gap-space-md sm:w-auto sm:flex-row sm:items-center"
+			>
+				<a
+					href={hero.primaryCta.href}
+					class="btn-shimmer inline-flex h-12 items-center justify-center rounded-xl bg-primary-container px-space-lg text-center text-headline-sm text-on-primary shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary hover:shadow-lg active:scale-95"
+				>
+					{hero.primaryCta.label}
+				</a>
+				<a
+					href={hero.secondaryCta.href}
+					class="inline-flex h-12 items-center justify-center rounded-xl border border-outline-variant/20 bg-surface-high px-space-lg text-center text-label-lg text-label-lg text-on-surface transition-all duration-200 hover:-translate-y-0.5 hover:bg-surface-highest active:scale-95"
+				>
+					{hero.secondaryCta.label}
+				</a>
+			</div>
+
+			<div class="mt-space-md flex items-start gap-space-xs text-on-surface-variant">
+				<Icon
+					name="material-symbols:verified-user"
+					size={20}
+					class="mt-0.5 shrink-0 text-primary-container"
+				/>
+				<span class="text-body-sm text-on-surface-variant">{hero.microTrust}</span>
+			</div>
+		</div>
+
+		{/* ── Props column: kraft waybill over the panel ───────────────── */}
+		<div class="relative isolate flex w-full max-w-lg flex-1 items-center justify-center lg:max-w-none">
+			<div
+				aria-hidden="true"
+				class="absolute -inset-4 -z-10 rounded-full bg-gradient-to-tr from-primary/10 via-secondary-container/25 to-primary-container/10 blur-3xl"
+			>
+			</div>
+
+			<div class="relative grid w-full grid-cols-1 items-end gap-space-md sm:grid-cols-12">
+				{/* Guía de despacho, impresa en cartón kraft */}
+				<article
+					class="reveal relative flex flex-col justify-between overflow-hidden rounded-xl bg-kraft-surface p-space-md text-on-tertiary-fixed shadow-xl transition-shadow duration-500 animate-float-card hover:shadow-2xl sm:col-span-6"
+					data-reveal
+				>
+					{/* Cinta adhesiva del cierre del paquete */}
+					<div
+						class="-mx-space-md -mt-space-md mb-space-sm flex h-5 items-center justify-between border-b border-manila-line/40 bg-kraft-line px-3 text-body-sm uppercase tracking-widest text-kraft-ink"
+					>
+						<span class="truncate">{hero.waybill.warehouse}</span>
+						<span class="flex shrink-0 items-center gap-1">
+							<span aria-hidden="true" class="size-1.5 rounded-full bg-kraft-ink"></span>
+							{hero.waybill.state}
+						</span>
+					</div>
+
+					<div class="mb-space-sm flex items-start justify-between gap-space-sm border-b border-manila-line pb-space-xs">
+						<div>
+							<span class="block text-correlative font-bold uppercase text-kraft-ink">
+								{hero.waybill.label}
+							</span>
+							<span class="whitespace-nowrap text-headline-sm tracking-tight text-on-tertiary-fixed">
+								{hero.waybill.tracking}
+							</span>
+						</div>
+						<span
+							class="shrink-0 rounded-xs bg-kraft-ink px-2 py-0.5 text-body-sm font-bold text-surface-lowest shadow-sm"
+						>
+							{hero.waybill.badge}
+						</span>
+					</div>
+
+					<dl class="mb-space-md space-y-1 text-body-sm">
+						{
+							hero.waybill.rows.map((row) => (
+								<div class="flex justify-between gap-space-sm">
+									<dt class="font-medium text-kraft-ink">{row.label}</dt>
+									<dd
+										class={
+											'numeric' in row && row.numeric
+												? 'font-mono font-bold text-paid-ink'
+												: 'font-semibold text-on-tertiary-fixed'
+										}
+									>
+										{row.value}
+									</dd>
+								</div>
+							))
+						}
+					</dl>
+
+					{/* Código de barra dibujado con divs: sin imagen, sin red */}
+					<div class="flex flex-col items-center border-t border-dashed border-manila-line pt-space-xs">
+						<div
+							aria-hidden="true"
+							class="my-1 flex h-8 w-full items-center justify-center gap-[2px] rounded-xs bg-on-tertiary-fixed px-2 py-1"
+						>
+							{
+								barcodeBars.map((width, index) => (
+									<span
+										class:list={[
+											'h-full',
+											index % 2 === 0 ? 'bg-surface-lowest' : 'bg-transparent',
+										]}
+										style={`width:${width}px`}
+									/>
+								))
+							}
+						</div>
+						<span class="text-body-sm tracking-wider text-kraft-ink">{hero.waybill.barcode}</span>
+					</div>
+				</article>
+
+				{/* Panel Topica, en vivo */}
+				<article
+					class="reveal relative z-10 flex flex-col gap-space-sm rounded-xl border border-surface-high/80 bg-surface-lowest p-space-md shadow-paper transition-shadow duration-300 animate-float-soft hover:shadow-2xl sm:col-span-6 sm:-ml-4"
+					data-reveal
+				>
+					<div class="flex items-center justify-between rounded-lg bg-surface-low px-space-sm py-2">
+						<div class="flex items-center gap-space-xs">
+							<span
+								aria-hidden="true"
+								class="radar-pulse size-2.5 rounded-full bg-primary-container text-primary-container"
+							></span>
+							<span class="text-label-md font-bold text-on-surface">{hero.panel.title}</span>
+						</div>
+						<span class="flex items-center gap-1 text-correlative font-semibold text-primary-container">
+							<span aria-hidden="true" class="size-1.5 animate-ping rounded-full bg-primary-container"
+							></span>
+							{hero.panel.live}
+						</span>
+					</div>
+
+					<div class="grid grid-cols-2 gap-space-xs">
+						{
+							hero.panel.metrics.map((metric) => (
+								<div
+									class:list={[
+										'rounded-lg p-space-xs',
+										'accent' in metric && metric.accent ? 'bg-primary/10' : 'bg-surface-low',
+									]}
+								>
+									<span
+										class:list={[
+											'block text-body-sm',
+											'accent' in metric && metric.accent
+												? 'text-primary'
+												: 'text-on-surface-variant',
+										]}
+									>
+										{metric.label}
+									</span>
+									<span
+										class:list={[
+											'accent' in metric && metric.accent
+												? 'text-[16px] leading-tight font-bold text-primary'
+												: 'text-headline-sm font-bold text-on-surface',
+										]}
+									>
+										{metric.value}
+									</span>
+								</div>
+							))
+						}
+					</div>
+
+					<div
+						class="flex flex-col gap-1 rounded-lg border border-surface-container/60 bg-surface-lowest p-2 shadow-sm"
+					>
+						<div class="flex items-center justify-between gap-space-sm">
+							<span class="text-label-md font-bold text-on-surface">{hero.panel.ticket.title}</span>
+							<span class="shrink-0 rounded-xs bg-paid px-2 py-0.5 text-label-md font-bold text-paid-ink">
+								{hero.panel.ticket.status}
+							</span>
+						</div>
+						<p class="text-body-sm text-on-surface-variant">{hero.panel.ticket.items}</p>
+						<div class="flex items-center justify-between pt-1">
+							<span class="text-correlative text-tertiary">{hero.panel.ticket.cai}</span>
+							<span class="text-correlative font-bold text-on-surface">
+								{hero.panel.ticket.total}
+							</span>
+						</div>
+					</div>
+
+					<div
+						class="flex items-center gap-2 rounded-lg bg-pending-tint px-space-xs py-1.5 text-pending-ink"
+					>
+						<Icon name="material-symbols:inventory-2" size={18} class="shrink-0" />
+						<span class="text-body-sm font-medium leading-tight">{hero.panel.warehouseNote}</span>
+					</div>
+				</article>
+			</div>
+		</div>
+	</div>
+</section>
