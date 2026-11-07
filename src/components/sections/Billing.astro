@@ -1,0 +1,50 @@
+---
+/**
+ * Billing (`#facturacion`) — the fiscal section.
+ *
+ * Copy spec S8 (`[BLOQUEO]` de facturación): the page must not claim automatic
+ * SAR submission in production. The design's billing copy stays, and the claim
+ * that is still unverified ships as a visible pending badge instead of an
+ * assertion.
+ */
+import { billing } from '../../content/landing';
+
+/** Exact string required by S8: unverified SAR submission is disclosed, not claimed. */
+const sarNotice = 'Envío automático al SAR: pendiente de verificación antes de publicar.';
+---
+
+<section id="facturacion" class="w-full scroll-mt-20 py-space-xl px-margin bg-surface-low">
+	<div class="mx-auto max-w-page">
+		<div class="max-w-3xl">
+			<h2 class="text-headline-xl text-on-surface">{billing.title}</h2>
+			<p class="mt-space-xs text-body-lg text-on-surface-variant">{billing.lead}</p>
+			<p
+				class="mt-space-sm inline-flex items-center rounded-xs border border-dashed border-pending-line bg-pending-tint px-2 py-1 text-label-md text-pending-ink"
+			>
+				{sarNotice}
+			</p>
+		</div>
+
+		<ol class="mt-space-lg grid gap-space-md md:grid-cols-2 lg:grid-cols-3">
+			{
+				billing.items.map((item, index) => (
+					<li
+						class="reveal flex flex-col gap-space-xs rounded-lg border border-outline-variant/50 bg-surface-lowest p-space-md shadow-card"
+						data-reveal
+						style={`--i: ${index}`}
+					>
+						<span class="text-correlative text-tertiary" aria-hidden="true">
+							{String(index + 1).padStart(2, '0')}
+						</span>
+						<h3 class="text-headline-sm text-on-surface">{item.title}</h3>
+						<p class="text-body-md text-on-surface-variant">{item.text}</p>
+					</li>
+				))
+			}
+		</ol>
+
+		<div class="mt-space-lg rounded-lg border border-outline-variant/50 bg-surface-lowest p-space-md">
+			<p class="text-headline-sm text-on-surface">{billing.closing}</p>
+		</div>
+	</div>
+</section>
