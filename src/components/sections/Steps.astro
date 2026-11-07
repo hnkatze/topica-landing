@@ -1,0 +1,40 @@
+---
+/**
+ * Steps — how onboarding actually goes, in four moves, back on the canvas after
+ * the kraft logistics block. Closes with the line that removes the last excuse:
+ * nothing to install, nothing to configure, nobody to hire.
+ */
+import { howItWorks } from '../../content/landing';
+
+const closingIndex = howItWorks.steps.length + 1;
+---
+
+<section class="w-full py-space-xl px-margin bg-background">
+	<div class="mx-auto max-w-page flex flex-col gap-space-lg">
+		<h2 class="reveal max-w-3xl text-headline-lg text-on-surface" data-reveal style="--i:0">
+			{howItWorks.title}
+		</h2>
+
+		<ol class="grid gap-space-md sm:grid-cols-2 lg:grid-cols-4">
+			{
+				howItWorks.steps.map((step, i) => (
+					<li class="reveal flex flex-col" data-reveal style={`--i:${i + 1}`}>
+						<span class="mb-space-sm text-currency text-primary-container" aria-hidden="true">
+							{i + 1}
+						</span>
+						<h3 class="mb-1 text-headline-sm text-on-surface">{step.title}</h3>
+						<p class="text-body-md text-on-surface-variant">{step.text}</p>
+					</li>
+				))
+			}
+		</ol>
+
+		<p
+			class="reveal border-t border-outline-variant/40 pt-space-md text-body-lg text-on-surface"
+			data-reveal
+			style={`--i:${closingIndex}`}
+		>
+			{howItWorks.closing}
+		</p>
+	</div>
+</section>

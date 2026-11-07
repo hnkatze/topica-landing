@@ -1,0 +1,70 @@
+---
+/**
+ * Logistics — the only kraft block of the page, and the reason the page exists.
+ *
+ * Owns `#envios`. Five numbered warehouse steps, then the three fears answered
+ * as dashed manila slips, then the one question the section still owes the
+ * reader: does my product qualify.
+ */
+import Icon from '../Icon.astro';
+import { logistics } from '../../content/landing';
+
+/** Two-digit correlative, the numbering the design uses for steps and tiers. */
+const stepNumber = (i: number): string => String(i + 1).padStart(2, '0');
+
+const fearsIndex = logistics.steps.length;
+---
+
+<section id="envios" class="w-full py-space-xl px-margin bg-kraft-surface text-on-tertiary-fixed scroll-mt-20">
+	<div class="mx-auto max-w-page flex flex-col gap-space-lg">
+		<div class="reveal max-w-3xl" data-reveal style="--i:0">
+			<p class="mb-space-xs text-correlative uppercase text-kraft-ink">{logistics.eyebrow}</p>
+			<h2 class="mb-space-xs text-headline-lg text-on-tertiary-fixed">{logistics.title}</h2>
+			<p class="text-body-lg text-on-tertiary-fixed/80">{logistics.lead}</p>
+		</div>
+
+		<ol class="grid gap-space-md sm:grid-cols-2 lg:grid-cols-3">
+			{
+				logistics.steps.map((step, i) => (
+					<li
+						class="reveal flex flex-col justify-between gap-space-sm rounded-lg border border-kraft-line bg-surface-lowest p-space-md shadow-card"
+						data-reveal
+						style={`--i:${i + 1}`}
+					>
+						<div>
+							<p class="mb-space-sm flex items-baseline gap-space-xs">
+								<span class="text-correlative uppercase text-kraft-ink">Paso</span>
+								<span class="text-currency text-kraft-ink">{stepNumber(i)}</span>
+							</p>
+							<h3 class="mb-1 text-headline-sm text-on-surface">{step.title}</h3>
+							<p class="text-body-md text-on-surface-variant">{step.text}</p>
+						</div>
+					</li>
+				))
+			}
+		</ol>
+
+		<div class="reveal flex flex-col gap-space-lg" data-reveal style={`--i:${fearsIndex + 1}`}>
+			<ul class="grid gap-space-md md:grid-cols-3">
+				{
+					logistics.fears.map((fear) => (
+						<li class="rounded-lg border border-dashed border-manila-line p-space-md">
+							<h3 class="mb-1 text-headline-sm text-on-tertiary-fixed">{fear.question}</h3>
+							<p class="text-body-md text-on-tertiary-fixed/80">{fear.answer}</p>
+						</li>
+					))
+				}
+			</ul>
+
+			<div>
+				<a
+					class="inline-flex h-touch items-center justify-center gap-space-xs rounded-xl bg-secondary px-space-lg text-label-lg text-on-primary transition-colors hover:bg-secondary/90"
+					href="#demostracion"
+				>
+					{logistics.cta}
+					<Icon name="material-symbols:arrow-forward" size={18} />
+				</a>
+			</div>
+		</div>
+	</div>
+</section>

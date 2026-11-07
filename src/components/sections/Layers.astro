@@ -1,0 +1,88 @@
+---
+/**
+ * Layers — the promise in four layers, on the alternate surface.
+ *
+ * Anchors: the section owns `#catalogo` (it is the catalogue pitch); the
+ * inventory card carries `#inventario` because that is the nav target for it.
+ * The last layer is the kraft one: it is the only card on the page that leaves
+ * the white surface, which is what makes logistics read as a separate promise.
+ */
+import Icon from '../Icon.astro';
+import { layers } from '../../content/landing';
+
+/** The content module only sets these fields on some layers. */
+type Layer = (typeof layers.items)[number] & {
+	kraft?: boolean;
+	cta?: string | null;
+	href?: string;
+};
+---
+
+<section id="catalogo" class="w-full py-space-xl px-margin bg-surface-low">
+	<div class="mx-auto max-w-page flex flex-col gap-space-lg">
+		<div class="reveal max-w-3xl" data-reveal style="--i:0">
+			<h2 class="mb-space-xs text-headline-lg text-on-surface">{layers.title}</h2>
+			<p class="text-body-lg text-on-surface-variant">{layers.lead}</p>
+		</div>
+
+		<div class="grid gap-space-md md:grid-cols-2">
+			{
+				layers.items.map((raw, i) => {
+					const item = raw as Layer;
+					const kraft = item.kraft === true;
+					const { cta, href } = item;
+					return (
+						<article
+							id={item.id === 'inventario' ? 'inventario' : undefined}
+							class:list={[
+								'reveal flex flex-col justify-between gap-space-md rounded-lg border p-space-lg shadow-card scroll-mt-24',
+								kraft
+									? 'bg-kraft-surface border-kraft-line text-on-tertiary-fixed'
+									: 'bg-surface-lowest border-outline-variant/50',
+							]}
+							data-reveal
+							style={`--i:${i}`}
+						>
+							<div class="flex flex-col gap-space-xs">
+								<p class:list={['text-correlative uppercase', kraft ? 'text-kraft-ink' : 'text-tertiary']}>
+									{item.kicker}
+								</p>
+								<h3 class:list={['text-headline-md', kraft ? 'text-on-tertiary-fixed' : 'text-on-surface']}>
+									{item.title}
+								</h3>
+								<p class:list={['text-body-md', kraft ? 'text-on-tertiary-fixed/75' : 'text-on-surface-variant']}>
+									{item.text}
+								</p>
+							</div>
+
+							{cta &&
+								(href ? (
+									<a
+										class:list={[
+											'inline-flex items-center gap-space-xs text-label-lg hover:underline',
+											kraft ? 'text-kraft-ink' : 'text-primary',
+										]}
+										href={href}
+									>
+										{cta}
+										<Icon name="material-symbols:arrow-forward" size={18} />
+									</a>
+								) : (
+									/* The example catalogue is not published yet (`pending` in the
+									 * content module), so the label stays non-interactive instead of
+									 * pointing at a page that does not exist. */
+									<p
+										class="inline-flex items-center gap-space-xs border-b border-dashed border-outline-variant text-label-lg text-on-surface-variant"
+										title="El catálogo de ejemplo todavía no está publicado"
+									>
+										{cta}
+										<Icon name="material-symbols:arrow-forward" size={18} />
+									</p>
+								))}
+						</article>
+					);
+				})
+			}
+		</div>
+	</div>
+</section>
