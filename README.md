@@ -35,25 +35,33 @@ scripts/sync-fonts.mjs         copia los woff2 latin a public/fonts/
 
 Los tokens provienen del sistema **Mercado Kraft** exportado de Stitch y viven
 en `src/styles/theme.css`. La fuente de verdad completa está en
-`design/stitch/mercado-kraft.md`; no editar ese archivo a mano.
+`design/stitch/mercado-kraft.md`; no editar ese archivo a mano. Los nombres
+siguen los del sistema para que el markup de Stitch se pueda portar sin
+traducciones.
 
-- **Color:** `forest` (primario), `kraft` (logística), `manila` (waybills),
-  `ink` (neutral oscuro), `linen` (canvas), `paper` (tarjeta), `crate`
-  (logística), más estados `paid`, `pending`, `whatsapp`, `danger`.
-- **Tipografía:** `headline-*` → Plus Jakarta Sans; `body-*`/`label-*` → Inter;
-  `correlative`/`currency` → JetBrains Mono con cifras tabulares. Las familias
-  se aplican solas, no hace falta escribir `font-display` a mano.
-- **Forma:** `rounded-xs` (tags fiscales) a `rounded-xl` (waybills). Touch
+- **Color:** `primary` / `primary-container` (acción sólida y su hover),
+  `secondary` (logística), `tertiary` (waybills), y la escalera tonal de
+  superficies en la que alternan las secciones: `background` → `surface-low` →
+  `surface-container` → `surface-high`. El bloque de envíos es el único que usa
+  `kraft-surface`. Estados: `paid`, `pending`, `whatsapp`, `danger`.
+- **Tipografía:** `text-hero` y `headline-*` → Plus Jakarta Sans; `body-*` y
+  `label-*` → Inter; `correlative` y `currency` → JetBrains Mono con cifras
+  tabulares. Las familias se aplican solas, no hace falta escribir
+  `font-display` a mano.
+- **Forma:** `rounded-xs` (tags fiscales) a `rounded-xl` (waybills, CTAs). Touch
   targets: `h-touch` (48px) y `h-touch-min` (44px).
 - **Elevación:** `shadow-card` (L1), `shadow-counter` (L3, acción fija),
-  `shadow-hairline` (borde interior de botón primario).
+  `shadow-paper` (maquetas del hero), `shadow-hairline` (borde interior de botón
+  primario).
 
 ## Movimiento
 
 Dos capas, sin librerías:
 
-1. **CSS** — `animate-fade-up`, `animate-fade-in`, `animate-scale-in`, más
-   `.press` (feedback al presionar) y `.lift` (hover en tarjetas).
+1. **CSS** — `animate-fade-up`, `animate-fade-in`, `animate-scale-in`, más los
+   bucles del diseño (`animate-float-soft`, `animate-float-card`,
+   `animate-radar`), `.press` (feedback al presionar), `.lift` (hover en
+   tarjetas) y `.btn-shimmer` (barrido de luz en el CTA primario).
 2. **JS** — un `IntersectionObserver` que revela `[data-reveal]` una sola vez,
    escalonable con `style="--i:2"`.
 
@@ -63,9 +71,10 @@ pone el script).
 
 ## Iconos
 
-`<Icon name="lucide:package" size={20} />`. Sets disponibles: `lucide:*` para UI
-y `simple-icons:*` para marcas (WhatsApp). SVG inline en build: sin fetch, sin
-icon font, sin JS extra. Marcas propias en `src/icons/`.
+`<Icon name="material-symbols:package-2" size={20} />`. Sets disponibles:
+`material-symbols:*` para UI — la familia del diseño — y `simple-icons:*` para
+marcas (WhatsApp). SVG inline en build: sin fetch, sin icon font, sin JS extra.
+Marcas propias en `src/icons/`.
 
 ## Estado
 

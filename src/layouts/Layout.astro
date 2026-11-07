@@ -21,7 +21,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="generator" content={Astro.generator} />
 		<meta name="color-scheme" content="light" />
-		<meta name="theme-color" content="#faf9f6" />
+		<meta name="theme-color" content="#faf8ff" />
 
 		<title>{title}</title>
 		<meta name="description" content={description} />
@@ -53,10 +53,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url);
 
 		<slot name="head" />
 	</head>
-	<body class="min-h-dvh bg-linen text-ink antialiased">
+	<body class="min-h-dvh bg-background text-on-surface antialiased">
 		<a
 			href="#contenido"
-			class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-forest focus:px-4 focus:py-2 focus:text-paper"
+			class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary-container focus:px-4 focus:py-2 focus:text-on-primary"
 		>
 			Saltar al contenido
 		</a>

@@ -13,7 +13,7 @@
     "sync-fonts": "node scripts/sync-fonts.mjs"
   },
   "dependencies": {
-    "@iconify-json/lucide": "^1.2.152",
+    "@iconify-json/material-symbols": "^1.2.98",
     "@iconify-json/simple-icons": "^1.2.101",
     "@tailwindcss/vite": "^4.3.5",
     "astro": "^7.4.7",

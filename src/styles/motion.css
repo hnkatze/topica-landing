@@ -1,11 +1,16 @@
 /* Motion primitives — CSS transitions + one IntersectionObserver.
  * Tier 1-2 of the animation ladder: no motion library (see L4 in
- * odd/tasks/landing-foundation.md). Only transform/opacity are animated. */
+ * odd/tasks/landing-foundation.md). Only transform/opacity are animated,
+ * with the documented exception of the FAQ height transition in base styles. */
 
 @theme {
 	--animate-fade-up: fade-up var(--duration-enter) var(--ease-out-soft) both;
 	--animate-fade-in: fade-in var(--duration-enter) var(--ease-out-soft) both;
 	--animate-scale-in: scale-in var(--duration-base) var(--ease-out-soft) both;
+	--animate-float-soft: float-soft var(--float-soft-duration) ease-in-out infinite;
+	--animate-float-card: float-card var(--float-card-duration) ease-in-out 0.8s infinite;
+	--animate-radar: radar var(--radar-duration) var(--ease-radar) infinite;
+	--animate-shimmer: shimmer var(--shimmer-duration) ease-in-out infinite;
 
 	@keyframes fade-up {
 		from {
@@ -37,6 +42,53 @@
 			transform: scale(1);
 		}
 	}
+
+	/* Hero props: the packed parcel and the panel float against each other */
+	@keyframes float-soft {
+		0%,
+		100% {
+			transform: translateY(0) rotate(0deg);
+		}
+		50% {
+			transform: translateY(-7px) rotate(0.4deg);
+		}
+	}
+
+	@keyframes float-card {
+		0%,
+		100% {
+			transform: translateY(0) rotate(0deg);
+		}
+		50% {
+			transform: translateY(-9px) rotate(-0.5deg);
+		}
+	}
+
+	/* "En vivo" dot: an expanding ring in currentColor */
+	@keyframes radar {
+		0% {
+			transform: scale(0.95);
+			opacity: 0.9;
+		}
+		50% {
+			transform: scale(1.4);
+			opacity: 0;
+		}
+		100% {
+			transform: scale(0.95);
+			opacity: 0;
+		}
+	}
+
+	/* Light sweep across the primary action */
+	@keyframes shimmer {
+		0% {
+			transform: translateX(-150%);
+		}
+		100% {
+			transform: translateX(200%);
+		}
+	}
 }
 
 @layer components {
@@ -51,8 +103,8 @@
 		opacity: 0;
 		transform: translateY(var(--reveal-y));
 		transition:
-			opacity var(--duration-enter) var(--ease-out-soft),
-			transform var(--duration-enter) var(--ease-out-soft);
+			opacity var(--duration-slow) var(--ease-out-soft),
+			transform var(--duration-slow) var(--ease-out-soft);
 		transition-delay: calc(var(--i, 0) * var(--reveal-stagger));
 		will-change: opacity, transform;
 	}
@@ -83,6 +135,39 @@
 			transform: translateY(-2px);
 			box-shadow: var(--shadow-counter);
 		}
+	}
+
+	/* Live indicator used by the hero panel and the eyebrow pulse. */
+	.radar-pulse {
+		position: relative;
+	}
+
+	.radar-pulse::after {
+		content: '';
+		position: absolute;
+		inset: -4px;
+		border-radius: 9999px;
+		background-color: currentColor;
+		animation: var(--animate-radar);
+	}
+
+	/* Light sweep on the primary action. The ::after is decorative only. */
+	.btn-shimmer {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.btn-shimmer::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 60%;
+		height: 100%;
+		background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.28), transparent);
+		transform: translateX(-150%);
+		animation: var(--animate-shimmer);
+		pointer-events: none;
 	}
 }
 

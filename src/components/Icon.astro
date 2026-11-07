@@ -1,13 +1,14 @@
 ---
 /**
- * Single icon primitive. Set packs in use: `lucide:*` for UI, `simple-icons:*`
- * for brands (WhatsApp). Icons are inlined SVG at build time: no runtime fetch,
- * no icon font, no extra client JS.
+ * Single icon primitive. Set packs in use: `material-symbols:*` for UI — the
+ * family the Stitch design uses — and `simple-icons:*` for brands (WhatsApp).
+ * Icons are inlined SVG at build time: no runtime fetch, no icon font, no extra
+ * client JS.
  */
 import { Icon as AstroIcon } from 'astro-icon/components';
 
 interface Props {
-	/** Iconify name including its set, e.g. `lucide:shopping-cart`. */
+	/** Iconify name including its set, e.g. `material-symbols:local-shipping`. */
 	name: string;
 	/** Square size in pixels. Counter targets need 20-24. */
 	size?: number;
