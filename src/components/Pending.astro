@@ -1,0 +1,30 @@
+---
+/**
+ * Renders a copy value that the business has not decided yet.
+ *
+ * The copy spec marks those values with `[DEFINIR]`. Shipping one silently is a
+ * business error, so they render as a visible dashed marker instead of looking
+ * like finished copy. Replace the value in `src/content/landing.ts` and the
+ * marker disappears on its own.
+ */
+interface Props {
+	value: string;
+	class?: string;
+}
+
+const { value, class: className = '' } = Astro.props;
+const pending = value.includes('[DEFINIR]');
+---
+
+{
+	pending ? (
+		<span
+			class={`inline-flex items-center gap-1 rounded-xs border border-dashed border-pending-line bg-pending-tint px-1.5 py-0.5 text-label-md text-pending-ink ${className}`}
+			title="Pendiente de definir por el negocio"
+		>
+			{value}
+		</span>
+	) : (
+		<span class={className}>{value}</span>
+	)
+}
