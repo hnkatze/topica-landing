@@ -1,0 +1,114 @@
+---
+/**
+ * Demo request (`#demostracion`).
+ *
+ * The form is real markup with real labels, but there is no endpoint yet. It is
+ * intentionally left without `action` and without client JS that would fake a
+ * submission: the "unconfigured" notice tells the visitor what actually works
+ * today (writing on WhatsApp). Copy spec S2 forbids self-service signup, so this
+ * is the only conversion path on the page.
+ *
+ * Native `<select>` is used over radio chips: it keeps the control keyboard
+ * operable and announced correctly without extra roles or state.
+ */
+import Icon from '../Icon.astro';
+import { demo } from '../../content/landing';
+
+const inputClass =
+	'h-touch w-full rounded-md border border-outline-variant bg-surface-lowest px-3 text-body-md text-on-surface focus:border-primary-container';
+
+const selectGroups = [demo.orderVolume, demo.storageInterest];
+---
+
+<section id="demostracion" class="w-full scroll-mt-20 py-space-xl px-margin bg-surface-high">
+	<div class="mx-auto max-w-page">
+		<div class="max-w-3xl">
+			<h2 class="text-headline-xl text-on-surface">{demo.title}</h2>
+			<p class="mt-space-xs text-body-lg text-on-surface-variant">{demo.lead}</p>
+		</div>
+
+		<p
+			data-unconfigured-notice
+			id="demo-unconfigured"
+			tabindex="-1"
+			aria-live="polite"
+			class="mt-space-md max-w-2xl rounded-md border border-dashed border-pending-line bg-pending-tint p-space-sm text-body-sm text-pending-ink"
+		>
+			{demo.unconfigured}
+		</p>
+
+		<form
+			data-unconfigured
+			class="mt-space-lg grid gap-space-md rounded-lg border border-outline-variant/50 bg-surface-lowest p-space-lg shadow-card sm:grid-cols-2"
+		>
+			{
+				demo.fields.map((field) => (
+					<div class="flex flex-col gap-1">
+						<label for={`demo-${field.name}`} class="text-label-md font-semibold text-on-surface">
+							{field.label}
+							{field.required && <span aria-hidden="true"> *</span>}
+						</label>
+						<input
+							id={`demo-${field.name}`}
+							name={field.name}
+							type={field.type}
+							required={field.required}
+							autocomplete={field.name === 'whatsapp' ? 'tel' : field.name === 'nombre' ? 'name' : 'off'}
+							class={inputClass}
+						/>
+					</div>
+				))
+			}
+
+			{
+				selectGroups.map((group) => (
+					<div class="flex flex-col gap-1">
+						<label for={`demo-${group.name}`} class="text-label-md font-semibold text-on-surface">
+							{group.label}
+						</label>
+						<select id={`demo-${group.name}`} name={group.name} class={inputClass}>
+							<option value="">—</option>
+							{group.options.map((option) => (
+								<option value={option}>{option}</option>
+							))}
+						</select>
+					</div>
+				))
+			}
+
+			<div class="flex flex-col items-start gap-space-sm sm:col-span-2">
+				<button
+					type="submit"
+					class="btn-shimmer h-touch w-full rounded-xl bg-primary-container px-space-lg text-label-lg text-on-primary sm:w-auto"
+				>
+					{demo.submit}
+				</button>
+				<p class="flex items-center gap-1 text-body-sm text-on-surface-variant">
+					<Icon name="material-symbols:chat" size={16} class="shrink-0 text-primary-container" />
+					<span>{demo.footnote}</span>
+				</p>
+			</div>
+		</form>
+	</div>
+</section>
+
+<script>
+	/* No endpoint exists yet. Instead of reloading the page and losing the input —
+	 * or faking a success state — the submit focuses the notice that explains what
+	 * actually works today. */
+	function wireUnconfiguredForms(): void {
+		document.querySelectorAll<HTMLFormElement>('form[data-unconfigured]').forEach((form) => {
+			if (form.dataset.wired === 'true') return;
+			form.dataset.wired = 'true';
+			form.addEventListener('submit', (event) => {
+				event.preventDefault();
+				const notice = form.parentElement?.querySelector<HTMLElement>('[data-unconfigured-notice]');
+				notice?.focus();
+				notice?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+			});
+		});
+	}
+
+	wireUnconfiguredForms();
+	document.addEventListener('astro:page-load', wireUnconfiguredForms);
+</script>

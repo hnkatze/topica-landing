@@ -1,0 +1,80 @@
+---
+/**
+ * Pricing (`#precios`) — three plans.
+ *
+ * Copy spec S7: no price is invented. Every plan renders its price through
+ * `<Pending />`, which keeps the `[DEFINIR]` marker visible until the business
+ * decides. Featured plan gets the elevated treatment and the "Recomendado" chip.
+ */
+import Icon from '../Icon.astro';
+import Pending from '../Pending.astro';
+import { pricing } from '../../content/landing';
+---
+
+<section id="precios" class="w-full scroll-mt-20 py-space-xl px-margin bg-surface-low">
+	<div class="mx-auto max-w-page">
+		<h2 class="max-w-3xl text-headline-xl text-on-surface">{pricing.title}</h2>
+
+		<ul class="mt-space-lg grid gap-space-md lg:grid-cols-3">
+			{
+				pricing.plans.map((plan, index) => {
+					const featured = 'featured' in plan && plan.featured;
+
+					return (
+						<li
+							class:list={[
+								'reveal flex flex-col rounded-lg p-space-md',
+								featured
+									? 'border-2 border-primary-container bg-surface-lowest shadow-counter lg:-translate-y-2'
+									: 'border border-outline-variant/50 bg-surface-lowest shadow-card',
+							]}
+							data-reveal
+							style={`--i: ${index}`}
+						>
+							{featured && (
+								<span class="mb-space-sm inline-flex w-fit items-center rounded-xs bg-primary-container px-2 py-1 text-label-md text-on-primary uppercase tracking-wide">
+									Recomendado
+								</span>
+							)}
+
+							<h3 class="text-headline-md text-on-surface">{plan.name}</h3>
+							<p class="mt-space-xs text-body-sm text-on-surface-variant">{plan.forWhom}</p>
+
+							<ul class="mt-space-md flex flex-col gap-space-sm border-t border-outline-variant/40 pt-space-md">
+								{plan.features.map((feature) => (
+									<li
+										class:list={[
+											'flex items-start gap-space-sm text-body-sm',
+											feature.included ? 'text-on-surface' : 'text-on-surface-variant/60',
+										]}
+									>
+										<Icon
+											name={feature.included ? 'material-symbols:check' : 'material-symbols:close'}
+											size={16}
+											class={`mt-0.5 shrink-0 ${feature.included ? 'text-primary-container' : 'text-on-surface-variant/60'}`}
+										/>
+										<span>
+											{feature.label}
+											{'note' in feature && (
+												<span class="ml-1 text-label-md text-tertiary">{feature.note}</span>
+											)}
+										</span>
+									</li>
+								))}
+							</ul>
+
+							<div class="mt-space-md flex flex-wrap items-baseline gap-space-sm border-t border-outline-variant/40 pt-space-md">
+								<Pending value={plan.price} />
+								{'priceNote' in plan && (
+									<span class="text-body-sm text-on-surface-variant">{plan.priceNote}</span>
+								)}
+							</div>
+						</li>
+					);
+				})
+			}
+		</ul>
+
+		<p class="mt-space-lg text-body-sm text-on-surface-variant">{pricing.note}</p>
+	</div>
+</section>
