@@ -1,233 +1,242 @@
 ---
 /**
- * Hero. Ported from the Stitch export (`parts/03.html`): an editorial text
- * column next to two physical props — a kraft waybill and the panel preview —
- * that float against each other.
+ * Hero promo (`S6`).
  *
- * All copy comes from `src/content/landing.ts`. The export's inline hex values
- * map onto the design tokens (`bg-kraft-surface`, `text-on-tertiary-fixed`,
- * `bg-paid` …), so nothing here invents a colour.
+ * Layout: a centered 980px column over an ink surface, with the mockup's
+ * decorative art absolutely positioned and hidden at <=1180. The spinning ring
+ * seal is part of the column, not the art: it is the first element of the load
+ * cascade.
+ *
+ * The countdown is the only client-side state that is not a modal: it reads its
+ * end date from `data-ends` and never hides the block if the clock is done.
  */
-import Icon from '../Icon.astro';
-import { hero } from '../../content/landing';
+import LineIcon from '../LineIcon.astro';
+import { hero, promo } from '../../content/landing';
 
-/* Barcode geometry: alternating ink bars and gaps, widths in px. Decorative —
- * the tracking number beside it is the real, readable value. */
-const barcodeBars = [2, 4, 2, 2, 6, 2, 4, 4, 2, 2, 8, 2, 4, 4, 2];
+const chipIcons = ['cart', 'globe', 'box', 'bag'] as const;
+
+const tiles = [
+	{
+		icon: 'cart' as const,
+		label: 'Ecommerce',
+		style: 'left:13%;top:430px',
+		size: 112,
+		radius: 31,
+		iconSize: 51,
+		bg: 'bg-brand-500',
+		fg: 'text-white',
+		rotate: '-8deg',
+		delay: '0s',
+	},
+	{
+		icon: 'bag' as const,
+		label: 'Ventas',
+		style: 'right:6%;top:90px',
+		size: 124,
+		radius: 34,
+		iconSize: 57,
+		bg: 'bg-palm',
+		fg: 'text-ink',
+		rotate: '10deg',
+		delay: '-2s',
+	},
+	{
+		icon: 'globe' as const,
+		label: 'Ventas en línea',
+		style: 'right:15%;top:360px',
+		size: 104,
+		radius: 29,
+		iconSize: 47,
+		bg: 'bg-brand-700',
+		fg: 'text-white',
+		rotate: '-6deg',
+		delay: '-4s',
+	},
+] as const;
 ---
 
-<section class="relative w-full overflow-hidden bg-background px-margin pt-space-xl pb-16">
-	<div class="mx-auto flex max-w-page flex-col items-center gap-space-xl lg:flex-row lg:gap-12">
-		{/* ── Text column ─────────────────────────────────────────────── */}
-		<div class="reveal flex max-w-xl shrink-0 flex-col items-start" data-reveal>
-			<div
-				class="mb-space-md inline-flex items-center gap-space-sm rounded-full border border-outline-variant/30 bg-surface-container px-space-md py-space-xs text-on-surface shadow-sm"
+<section id="inicio" class="herosec relative overflow-hidden bg-ink text-paper">
+	<div
+		aria-hidden="true"
+		class="pointer-events-none absolute bottom-[-320px] left-1/2 h-[640px] w-[1400px] -translate-x-1/2"
+		style="background: radial-gradient(closest-side, var(--color-glow), var(--color-glow-deep) 55%, rgb(22 32 12 / 0) 100%); animation: tglow var(--glow-duration) ease-in-out infinite"
+	>
+	</div>
+
+	<div class="hero-art pointer-events-none absolute inset-0" aria-hidden="true">
+		<!-- Isometric cube, the section's one illustration -->
+		<div class="absolute" style="left:4%;top:110px">
+			<svg width="210" height="220" viewBox="0 0 200 210" aria-hidden="true">
+				<polygon points="100,20 180,60 100,100 20,60" fill="#CBC995"></polygon>
+				<polygon points="20,60 100,100 100,190 20,150" fill="#636B32"></polygon>
+				<polygon points="100,100 180,60 180,150 100,190" fill="#4B5226"></polygon>
+			</svg>
+			<span
+				class="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-palm px-2.5 py-1 text-[10px] font-extrabold tracking-[0.08em] whitespace-nowrap text-ink uppercase shadow-label"
 			>
-				<span
-					aria-hidden="true"
-					class="radar-pulse size-2.5 rounded-full bg-primary text-primary"
-				></span>
-				<span class="text-label-md uppercase tracking-wider text-on-surface">{hero.eyebrow}</span>
-			</div>
-
-			<h1
-				class="mb-space-md text-hero tracking-tight text-on-surface sm:text-[44px] sm:leading-[52px]"
-			>
-				{hero.title}
-			</h1>
-
-			<p class="mb-space-lg max-w-2xl text-body-lg leading-relaxed text-on-surface-variant">
-				{hero.lead}
-			</p>
-
-			<div
-				class="flex w-full flex-col items-stretch gap-space-md sm:w-auto sm:flex-row sm:items-center"
-			>
-				<a
-					href={hero.primaryCta.href}
-					class="btn-shimmer inline-flex h-12 items-center justify-center rounded-xl bg-primary-container px-space-lg text-center text-headline-sm text-on-primary shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-primary hover:shadow-lg active:scale-95"
-				>
-					{hero.primaryCta.label}
-				</a>
-				<a
-					href={hero.secondaryCta.href}
-					class="inline-flex h-12 items-center justify-center rounded-xl border border-outline-variant/20 bg-surface-high px-space-lg text-center text-label-lg text-label-lg text-on-surface transition-all duration-200 hover:-translate-y-0.5 hover:bg-surface-highest active:scale-95"
-				>
-					{hero.secondaryCta.label}
-				</a>
-			</div>
-
-			<div class="mt-space-md flex items-start gap-space-xs text-on-surface-variant">
-				<Icon
-					name="material-symbols:verified-user"
-					size={20}
-					class="mt-0.5 shrink-0 text-primary-container"
-				/>
-				<span class="text-body-sm text-on-surface-variant">{hero.microTrust}</span>
-			</div>
+				Productos
+			</span>
 		</div>
 
-		{/* ── Props column: kraft waybill over the panel ───────────────── */}
-		<div class="relative isolate flex w-full max-w-lg flex-1 items-center justify-center lg:max-w-none">
-			<div
+		{
+			tiles.map((tile) => (
+				<div class="absolute" style={tile.style}>
+					<span
+						class:list={['puff grid place-items-center', tile.bg, tile.fg]}
+						style={`width:${tile.size}px;height:${tile.size}px;border-radius:${tile.radius}px;transform:rotate(${tile.rotate});animation:tfloat var(--float-duration) ease-in-out ${tile.delay} infinite`}
+					>
+						<LineIcon name={tile.icon} size={tile.iconSize} strokeWidth={2.2} />
+					</span>
+					<span
+						class="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-palm px-2.5 py-1 text-[10px] font-extrabold tracking-[0.08em] whitespace-nowrap text-ink uppercase shadow-label"
+					>
+						{tile.label}
+					</span>
+				</div>
+			))
+		}
+
+		<span
+			class="puff absolute flex items-center justify-center text-2xl font-extrabold text-ink"
+			style="right:5%;bottom:110px;width:170px;height:72px;border-radius:24px;background-color:#12ab4d;animation:tfloat var(--float-duration) ease-in-out -1s infinite"
+		>
+			{hero.art.cai}
+		</span>
+
+		<span
+			class="absolute rounded-full bg-palm/20"
+			style="left:24%;top:70px;width:46px;height:46px;animation:tfloat2 var(--float2-duration) ease-in-out infinite"
+		></span>
+	</div>
+
+	<div class="wrap wrap-hero relative flex flex-col items-center gap-[26px] text-center">
+		<div class="tload relative flex h-[120px] w-[120px] items-center justify-center">
+			<svg
+				viewBox="0 0 120 120"
+				width="120"
+				height="120"
 				aria-hidden="true"
-				class="absolute -inset-4 -z-10 rounded-full bg-gradient-to-tr from-primary/10 via-secondary-container/25 to-primary-container/10 blur-3xl"
+				style="animation: tspin var(--spin-duration) linear infinite"
 			>
-			</div>
-
-			<div class="relative grid w-full grid-cols-1 items-end gap-space-md sm:grid-cols-12">
-				{/* Guía de despacho, impresa en cartón kraft */}
-				<article
-					class="reveal relative flex flex-col justify-between overflow-hidden rounded-xl bg-kraft-surface p-space-md text-on-tertiary-fixed shadow-xl transition-shadow duration-500 animate-float-card hover:shadow-2xl sm:col-span-6"
-					data-reveal
+				<defs>
+					<path id="hero-ring-path" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"></path>
+				</defs>
+				<text
+					fill="#CBC995"
+					font-size="12.5"
+					letter-spacing="2.6"
+					font-weight="800"
+					font-family="var(--font-display)"
 				>
-					{/* Cinta adhesiva del cierre del paquete */}
-					<div
-						class="-mx-space-md -mt-space-md mb-space-sm flex h-5 items-center justify-between border-b border-manila-line/40 bg-kraft-line px-3 text-body-sm uppercase tracking-widest text-kraft-ink"
-					>
-						<span class="truncate">{hero.waybill.warehouse}</span>
-						<span class="flex shrink-0 items-center gap-1">
-							<span aria-hidden="true" class="size-1.5 rounded-full bg-kraft-ink"></span>
-							{hero.waybill.state}
+					<textPath href="#hero-ring-path">{hero.art.ring.repeat(2)}</textPath>
+				</text>
+			</svg>
+			<span
+				class="absolute inset-[30px] grid place-items-center rounded-full bg-palm text-ink"
+			>
+				<LineIcon name="zap" size={28} strokeWidth={2.4} />
+			</span>
+		</div>
+
+		<span
+			class="tload inline-flex items-center gap-2 rounded-full border border-palm-line bg-palm-chip px-4 py-1.5 text-[12px] font-bold tracking-[0.08em] text-palm uppercase"
+			style="--load-delay: .05s"
+		>
+			{hero.eyebrow}
+		</span>
+
+		<h1 class="tload h1" style="--load-delay: .1s; margin: -6px 0 0">
+			{hero.titleLead}
+			<span class="block text-brand-500">{hero.titleAccent}</span>
+		</h1>
+
+		<div class="tload flex items-center justify-center" style="--load-delay: .2s">
+			<span class="desde">{hero.price.from}</span>
+			<span class="pricepill">
+				{hero.price.amount}<span class="pricepill-period">{hero.price.period}</span>
+			</span>
+		</div>
+
+		<p class="tload max-w-[620px] text-lead text-palm/85" style="--load-delay: .25s">
+			{hero.lead}
+		</p>
+
+		<div class="tload flex flex-wrap justify-center gap-2.5" style="--load-delay: .3s">
+			{
+				hero.chips.map((chip, index) => (
+					<span class="chip border-palm-line bg-palm-chip text-palm">
+						<LineIcon name={chipIcons[index]} size={16} strokeWidth={2.2} class="me-1.5" />
+						{chip}
+					</span>
+				))
+			}
+		</div>
+
+		<div
+			class="tload flex flex-col items-center gap-3"
+			style="--load-delay: .4s"
+		>
+			<button type="button" class="btn btn-primary btn-lg tbtn" data-agenda-open>
+				{hero.cta}
+			</button>
+			<span class="flex items-center gap-2 text-[14px] text-palm/75">
+				<LineIcon name="shield" size={18} />
+				{hero.trust}
+			</span>
+		</div>
+
+		<div class="tload flex flex-col items-center gap-2.5" style="--load-delay: .5s">
+			<span class="text-[13px] font-semibold text-palm/75">{hero.countdown.label}</span>
+			<div
+				class="flex gap-2"
+				data-countdown
+				data-ends={promo.endsAt}
+				role="timer"
+				aria-live="off"
+			>
+				{
+					hero.countdown.units.map((unit) => (
+						<span class="timer-cell">
+							<span class="timer-num" data-unit={unit.key}>
+								00
+							</span>
+							<span class="timer-unit">{unit.label}</span>
 						</span>
-					</div>
-
-					<div class="mb-space-sm flex items-start justify-between gap-space-sm border-b border-manila-line pb-space-xs">
-						<div>
-							<span class="block text-correlative font-bold uppercase text-kraft-ink">
-								{hero.waybill.label}
-							</span>
-							<span class="whitespace-nowrap text-headline-sm tracking-tight text-on-tertiary-fixed">
-								{hero.waybill.tracking}
-							</span>
-						</div>
-						<span
-							class="shrink-0 rounded-xs bg-kraft-ink px-2 py-0.5 text-body-sm font-bold text-surface-lowest shadow-sm"
-						>
-							{hero.waybill.badge}
-						</span>
-					</div>
-
-					<dl class="mb-space-md space-y-1 text-body-sm">
-						{
-							hero.waybill.rows.map((row) => (
-								<div class="flex justify-between gap-space-sm">
-									<dt class="font-medium text-kraft-ink">{row.label}</dt>
-									<dd
-										class={
-											'numeric' in row && row.numeric
-												? 'font-mono font-bold text-paid-ink'
-												: 'font-semibold text-on-tertiary-fixed'
-										}
-									>
-										{row.value}
-									</dd>
-								</div>
-							))
-						}
-					</dl>
-
-					{/* Código de barra dibujado con divs: sin imagen, sin red */}
-					<div class="flex flex-col items-center border-t border-dashed border-manila-line pt-space-xs">
-						<div
-							aria-hidden="true"
-							class="my-1 flex h-8 w-full items-center justify-center gap-[2px] rounded-xs bg-on-tertiary-fixed px-2 py-1"
-						>
-							{
-								barcodeBars.map((width, index) => (
-									<span
-										class:list={[
-											'h-full',
-											index % 2 === 0 ? 'bg-surface-lowest' : 'bg-transparent',
-										]}
-										style={`width:${width}px`}
-									/>
-								))
-							}
-						</div>
-						<span class="text-body-sm tracking-wider text-kraft-ink">{hero.waybill.barcode}</span>
-					</div>
-				</article>
-
-				{/* Panel Topica, en vivo */}
-				<article
-					class="reveal relative z-10 flex flex-col gap-space-sm rounded-xl border border-surface-high/80 bg-surface-lowest p-space-md shadow-paper transition-shadow duration-300 animate-float-soft hover:shadow-2xl sm:col-span-6 sm:-ml-4"
-					data-reveal
-				>
-					<div class="flex items-center justify-between rounded-lg bg-surface-low px-space-sm py-2">
-						<div class="flex items-center gap-space-xs">
-							<span
-								aria-hidden="true"
-								class="radar-pulse size-2.5 rounded-full bg-primary-container text-primary-container"
-							></span>
-							<span class="text-label-md font-bold text-on-surface">{hero.panel.title}</span>
-						</div>
-						<span class="flex items-center gap-1 text-correlative font-semibold text-primary-container">
-							<span aria-hidden="true" class="size-1.5 animate-ping rounded-full bg-primary-container"
-							></span>
-							{hero.panel.live}
-						</span>
-					</div>
-
-					<div class="grid grid-cols-2 gap-space-xs">
-						{
-							hero.panel.metrics.map((metric) => (
-								<div
-									class:list={[
-										'rounded-lg p-space-xs',
-										'accent' in metric && metric.accent ? 'bg-primary/10' : 'bg-surface-low',
-									]}
-								>
-									<span
-										class:list={[
-											'block text-body-sm',
-											'accent' in metric && metric.accent
-												? 'text-primary'
-												: 'text-on-surface-variant',
-										]}
-									>
-										{metric.label}
-									</span>
-									<span
-										class:list={[
-											'accent' in metric && metric.accent
-												? 'text-[16px] leading-tight font-bold text-primary'
-												: 'text-headline-sm font-bold text-on-surface',
-										]}
-									>
-										{metric.value}
-									</span>
-								</div>
-							))
-						}
-					</div>
-
-					<div
-						class="flex flex-col gap-1 rounded-lg border border-surface-container/60 bg-surface-lowest p-2 shadow-sm"
-					>
-						<div class="flex items-center justify-between gap-space-sm">
-							<span class="text-label-md font-bold text-on-surface">{hero.panel.ticket.title}</span>
-							<span class="shrink-0 rounded-xs bg-paid px-2 py-0.5 text-label-md font-bold text-paid-ink">
-								{hero.panel.ticket.status}
-							</span>
-						</div>
-						<p class="text-body-sm text-on-surface-variant">{hero.panel.ticket.items}</p>
-						<div class="flex items-center justify-between pt-1">
-							<span class="text-correlative text-tertiary">{hero.panel.ticket.cai}</span>
-							<span class="text-correlative font-bold text-on-surface">
-								{hero.panel.ticket.total}
-							</span>
-						</div>
-					</div>
-
-					<div
-						class="flex items-center gap-2 rounded-lg bg-pending-tint px-space-xs py-1.5 text-pending-ink"
-					>
-						<Icon name="material-symbols:inventory-2" size={18} class="shrink-0" />
-						<span class="text-body-sm font-medium leading-tight">{hero.panel.warehouseNote}</span>
-					</div>
-				</article>
+					))
+				}
 			</div>
 		</div>
 	</div>
 </section>
+
+<script>
+	const root = document.querySelector<HTMLElement>('[data-countdown]');
+
+	if (root) {
+		const ends = Date.parse(root.dataset.ends ?? '');
+		const cells = {
+			days: root.querySelector<HTMLElement>('[data-unit="days"]'),
+			hours: root.querySelector<HTMLElement>('[data-unit="hours"]'),
+			minutes: root.querySelector<HTMLElement>('[data-unit="minutes"]'),
+			seconds: root.querySelector<HTMLElement>('[data-unit="seconds"]'),
+		};
+		const pad = (value: number) => String(value).padStart(2, '0');
+
+		const tick = () => {
+			const left = Number.isNaN(ends) ? 0 : Math.max(0, ends - Date.now());
+			const totalSeconds = Math.floor(left / 1000);
+			const seconds = totalSeconds % 60;
+			const minutes = Math.floor(totalSeconds / 60) % 60;
+			const hours = Math.floor(totalSeconds / 3600) % 24;
+			const days = Math.floor(totalSeconds / 86400);
+
+			if (cells.days) cells.days.textContent = pad(days);
+			if (cells.hours) cells.hours.textContent = pad(hours);
+			if (cells.minutes) cells.minutes.textContent = pad(minutes);
+			if (cells.seconds) cells.seconds.textContent = pad(seconds);
+		};
+
+		tick();
+		window.setInterval(tick, 1000);
+	}
+</script>
