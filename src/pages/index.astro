@@ -1,7 +1,76 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import MarqueeBar from '../components/sections/MarqueeBar.astro';
+import Header from '../components/sections/Header.astro';
+import Hero from '../components/sections/Hero.astro';
+import Beneficios from '../components/sections/Beneficios.astro';
+import BigMarquee from '../components/sections/BigMarquee.astro';
+import ComoFunciona from '../components/sections/ComoFunciona.astro';
+import Planes from '../components/sections/Planes.astro';
+import CtaFinal from '../components/sections/CtaFinal.astro';
+import Footer from '../components/sections/Footer.astro';
+import AgendaModal from '../components/sections/AgendaModal.astro';
+
+import { brand, seo } from '../content/landing';
+
+const site = Astro.site ?? new URL(Astro.url.origin);
+const url = new URL(Astro.url.pathname, site).href;
+
+/* Organization + Service only: the FAQ section no longer exists, so its
+ * FAQPage markup was dropped with it (S17). */
+const structuredData = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Organization',
+		name: brand.name,
+		url,
+		description: brand.tagline,
+		email: brand.email.label,
+		telephone: '+504 9974-7054',
+		address: {
+			'@type': 'PostalAddress',
+			streetAddress: brand.address,
+			addressLocality: 'San Pedro Sula',
+			addressCountry: 'HN',
+		},
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'Service',
+		name: 'Catálogo, inventario y facturación para comercios en línea',
+		provider: { '@type': 'Organization', name: brand.name },
+		areaServed: 'HN',
+		serviceType: 'Comercio electrónico, inventario y facturación',
+		offers: [
+			{
+				'@type': 'Offer',
+				name: 'Básico Emprendedor',
+				price: '399',
+				priceCurrency: 'HNL',
+			},
+			{ '@type': 'Offer', name: 'Pyme', price: '699', priceCurrency: 'HNL' },
+		],
+	},
+];
 ---
 
-<Layout title="Topica">
-	<main id="contenido"></main>
+<Layout title={seo.title} description={seo.description}>
+	<script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+	<MarqueeBar />
+
+	<Header />
+
+	<main id="contenido">
+		<Hero />
+		<Beneficios />
+		<BigMarquee />
+		<ComoFunciona />
+		<Planes />
+		<CtaFinal />
+	</main>
+
+	<Footer />
+
+	<AgendaModal />
 </Layout>
