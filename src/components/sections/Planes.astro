@@ -1,0 +1,132 @@
+---
+/**
+ * Planes (`S9`): two launch-price cards. The featured Pyme card sits on the ink
+ * surface, which is why its price can carry the action green; the basic card is
+ * white and keeps the ink price. Both open the agenda modal carrying their plan.
+ */
+import LineIcon from '../LineIcon.astro';
+import { pricing } from '../../content/landing';
+---
+
+<section id="planes" class="sec pad bg-paper">
+	<div class="wrap wrap-narrow">
+		<div class="reveal flex flex-col items-center gap-3.5 text-center">
+			<span class="eyebrow">{pricing.eyebrow}</span>
+			<h2 class="h2">{pricing.title}</h2>
+			<p class="sub">{pricing.lead}</p>
+		</div>
+
+		<div
+			class="mt-12 grid gap-8"
+			style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))"
+		>
+			{
+				pricing.plans.map((plan) => (
+					<article
+						class:list={[
+							'cardpad tcard reveal flex flex-col rounded-card border',
+							plan.featured ? 'border-ink bg-ink text-palm' : 'border-hairline bg-card text-ink',
+						]}
+					>
+						<h3 class:list={['h3 h3-plan', plan.featured ? 'text-white' : 'text-ink']}>
+							{plan.name}
+						</h3>
+						<p class:list={['mt-1.5 text-[15px]', plan.featured ? 'text-palm/80' : 'text-olive']}>
+							{plan.forWhom}
+						</p>
+
+						<div class="mt-6 flex items-baseline gap-2">
+							<span class:list={['price-num', plan.featured ? 'text-brand-500' : 'text-ink']}>
+								{pricing.currency} {plan.amount}
+							</span>
+							<span class:list={['text-sub', plan.featured ? 'text-palm' : 'text-olive']}>
+								{plan.period}
+							</span>
+						</div>
+
+						<span
+							class:list={[
+								'pill mt-3 w-fit',
+								plan.featured ? 'bg-brand-500 text-ink' : 'bg-palm-chip text-ink',
+							]}
+						>
+							{plan.pill}
+						</span>
+
+						<ul
+							class:list={[
+								'mt-6 flex flex-col gap-3 border-t pt-6',
+								plan.featured ? 'border-palm/20' : 'border-hairline',
+							]}
+						>
+							{plan.features.map((feature) => {
+								const iconTone = feature.included
+									? plan.featured
+										? 'text-brand-500'
+										: 'text-brand-700'
+									: 'text-muted';
+								const textTone = feature.included
+									? plan.featured
+										? 'text-white'
+										: 'text-ink'
+									: 'text-muted';
+
+								return (
+									<li class="flex items-center gap-2.5 text-body">
+										<LineIcon
+											name={feature.included ? 'check' : 'close'}
+											size={18}
+											strokeWidth={2.4}
+											class={iconTone}
+										/>
+										<span class={textTone}>{feature.label}</span>
+									</li>
+								);
+							})}
+						</ul>
+
+						<div
+							class:list={[
+								'mt-6 flex items-start gap-2 text-[13px] leading-[18px]',
+								plan.featured ? 'text-palm' : 'text-olive',
+							]}
+						>
+							<LineIcon
+								name="gift"
+								size={18}
+								class="mt-px shrink-0 text-brand-500"
+								style="animation: tgift var(--gift-duration) ease-in-out infinite"
+							/>
+							<span>{pricing.gift}</span>
+						</div>
+
+						<button
+							type="button"
+							class:list={[
+								'btn tbtn mt-auto',
+								plan.featured ? 'btn-primary' : 'btn-dark',
+							]}
+							data-agenda-open
+							data-plan={plan.id}
+						>
+							{pricing.cta}
+						</button>
+
+						<span
+							class:list={[
+								'mt-3 text-center text-[13px]',
+								plan.featured ? 'text-palm/70' : 'text-olive',
+							]}
+						>
+							{pricing.note}
+						</span>
+					</article>
+				))
+			}
+		</div>
+
+		<p class="mt-10 text-center text-body text-olive">
+			{pricing.help}
+		</p>
+	</div>
+</section>

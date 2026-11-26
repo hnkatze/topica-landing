@@ -1,0 +1,35 @@
+---
+/**
+ * Cómo funciona (`S8`): sticky-left pitch at 400px and a three-column list of
+ * steps that wraps under it on narrow screens.
+ */
+import { howItWorks } from '../../content/landing';
+---
+
+<section id="como-funciona" class="sec pad bg-paper">
+	<div class="wrap flex flex-wrap items-start gap-16">
+		<div class="reveal flex flex-col gap-4" style="flex: 1 1 320px; max-width: 400px">
+			<span class="eyebrow">{howItWorks.eyebrow}</span>
+			<h2 class="h2">{howItWorks.title}</h2>
+			<p class="sub">{howItWorks.lead}</p>
+			<button type="button" class="btn btn-solid tbtn mt-2 w-fit" data-agenda-open>
+				{howItWorks.cta}
+			</button>
+		</div>
+
+		<ol
+			class="grid list-none gap-6 p-0"
+			style="flex: 999 1 560px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))"
+		>
+			{
+				howItWorks.steps.map((step) => (
+					<li class="cardpad reveal flex flex-col rounded-card border border-hairline bg-paper">
+						<span class="step-num">{step.number}</span>
+						<h3 class="h3 h3-sm mt-2 text-ink">{step.title}</h3>
+						<p class="mt-2 text-body text-olive">{step.body}</p>
+					</li>
+				))
+			}
+		</ol>
+	</div>
+</section>

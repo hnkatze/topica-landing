@@ -1,0 +1,56 @@
+---
+/**
+ * Beneficios (`S7`): four cards on one auto-fit grid, the fourth on the ink
+ * surface because it is the plan-gated feature (`Plan Pyme`).
+ */
+import LineIcon from '../LineIcon.astro';
+import { benefits } from '../../content/landing';
+---
+
+<section id="beneficios" class="sec pad bg-paper">
+	<div class="wrap">
+		<div class="reveal flex flex-col gap-3.5">
+			<span class="eyebrow">{benefits.eyebrow}</span>
+			<h2 class="h2 max-w-[720px]">{benefits.title}</h2>
+			<p class="sub max-w-[560px]">{benefits.lead}</p>
+		</div>
+
+		<div
+			class="mt-12 grid gap-6"
+			style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr))"
+		>
+			{
+				benefits.items.map((item, index) => {
+					const dark = 'dark' in item && item.dark;
+					return (
+						<article
+							class:list={[
+								'cardpad tcard reveal flex flex-col rounded-card border',
+								dark ? 'border-ink bg-ink text-palm' : 'border-hairline bg-card text-ink',
+							]}
+							style={`animation-delay: ${index * 60}ms`}
+						>
+							<span
+								class:list={[
+									'icon-tile',
+									dark ? 'bg-white/10 text-brand-500' : 'bg-brand-700/10 text-brand-700',
+								]}
+							>
+								<LineIcon name={item.icon} size={24} />
+							</span>
+
+							{'pill' in item && item.pill && (
+								<span class="pill mt-4 w-fit bg-brand-500 text-ink">{item.pill}</span>
+							)}
+
+							<h3 class:list={['h3 mt-2', dark ? 'text-white' : 'text-ink']}>{item.title}</h3>
+							<p class:list={['mt-2 text-body', dark ? 'text-palm/80' : 'text-olive']}>
+								{item.body}
+							</p>
+						</article>
+					);
+				})
+			}
+		</div>
+	</div>
+</section>

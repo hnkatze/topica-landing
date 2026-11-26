@@ -1,0 +1,40 @@
+---
+/**
+ * Final CTA (`S10`): solid brand surface with the mockup's floating geometry in
+ * a clipped right column.
+ */
+import { finalCta } from '../../content/landing';
+---
+
+<section class="pad bg-paper pb-16 md:pb-24">
+	<div class="wrap">
+		<div class="ctabox reveal relative overflow-hidden bg-brand-700 text-white">
+			<div
+				aria-hidden="true"
+				class="pointer-events-none absolute top-0 right-0 hidden h-full w-[420px] lg:block"
+			>
+				<span
+					class="absolute top-10 right-16 block h-[160px] w-[160px] rounded-3xl bg-white/10"
+					style="animation: tfloat var(--float-duration) ease-in-out infinite"
+				></span>
+				<span
+					class="absolute right-40 bottom-10 block h-[120px] w-[120px] rounded-3xl bg-brand-500/40"
+					style="animation: tfloat2 var(--float2-duration) ease-in-out infinite"
+				></span>
+				<span
+					class="absolute top-1/2 right-4 block h-[120px] w-[300px] rounded-full bg-white/5"
+					style="animation: tfloat var(--float-duration) ease-in-out -3s infinite"
+				></span>
+			</div>
+
+			<div class="relative z-10 flex max-w-[560px] flex-col gap-5">
+				<h2 class="h2 h2-lg">{finalCta.title}</h2>
+				<p class="text-sub text-white/85">{finalCta.lead}</p>
+				<button type="button" class="btn btn-primary btn-lg tbtn mt-1 w-fit" data-agenda-open>
+					{finalCta.cta}
+				</button>
+				<span class="text-[14px] text-white/75">{finalCta.place}</span>
+			</div>
+		</div>
+	</div>
+</section>
