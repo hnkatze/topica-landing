@@ -1,0 +1,321 @@
+---
+/**
+ * Agenda modal (`S13`) + floating action button.
+ *
+ * Implemented on the native `<dialog>` element: `showModal()` gives the focus
+ * trap, the inert background, the Escape key and the focus return to the
+ * trigger for free, so none of that is hand-rolled.
+ *
+ * Submission (`S12`): the mockup only flips a boolean. Here the lead leaves the
+ * page through WhatsApp with a prefilled message, and the success state is shown
+ * only when that handoff actually opened. If the popup is blocked the form stays
+ * put and offers the direct link instead of claiming a receipt.
+ */
+import LineIcon from '../LineIcon.astro';
+import { agenda, brand } from '../../content/landing';
+
+const waNumber = brand.whatsapp.number;
+---
+
+<button type="button" class="fab btn btn-primary tbtn" data-agenda-open>
+	<LineIcon name="calendar" size={18} />
+	{agenda.fab}
+</button>
+
+<dialog
+	id="agenda-dialog"
+	class="agenda-dialog w-[min(920px,calc(100vw-2rem))] max-w-none rounded-modal border-0 bg-transparent p-0 text-ink"
+	aria-labelledby="cita-titulo"
+	aria-describedby="cita-lead"
+>
+	<div class="relative overflow-hidden rounded-modal bg-card shadow-[0_30px_60px_rgba(22,32,12,0.35)]">
+		<button
+			type="button"
+			data-agenda-close
+			class="absolute end-4 top-4 z-20 grid h-touch-min w-touch-min place-items-center rounded-xl bg-paper text-ink"
+			aria-label={agenda.close}
+		>
+			<LineIcon name="close" size={20} strokeWidth={2.4} />
+		</button>
+
+		<div class="grid md:grid-cols-[0.9fr_1.1fr]">
+			<div class="bg-brand-700 p-8 text-white md:p-10">
+				<h2 id="cita-titulo" class="h3 text-white md:text-[28px] md:leading-9">
+					{agenda.title}
+				</h2>
+				<p id="cita-lead" class="mt-3 text-[15px] leading-[22px] text-white/85">{agenda.lead}</p>
+				<ul class="mt-6 hidden flex-col gap-2.5 md:flex">
+					{
+						[
+							'Te escribimos por WhatsApp, no te llamamos',
+							'Lo ves funcionando con tus propios productos',
+							'Sin contrato forzado ni costo de instalación',
+						].map((item) => (
+							<li class="flex items-start gap-2 text-[14px] text-white/90">
+								<LineIcon name="check" size={18} strokeWidth={2.6} class="mt-px shrink-0" />
+								{item}
+							</li>
+						))
+					}
+				</ul>
+			</div>
+
+			<div class="modalpad pt-12">
+				<form data-agenda-form class="flex flex-col gap-4">
+					<div class="flex flex-col gap-1.5">
+						<label class="field-label" for="agenda-nombre">{agenda.fields.name.label}</label>
+						<input
+							class="field"
+							id="agenda-nombre"
+							name="nombre"
+							type="text"
+							required
+							autofocus
+							autocomplete="name"
+							placeholder={agenda.fields.name.placeholder}
+						/>
+					</div>
+
+					<div class="flex flex-col gap-1.5">
+						<label class="field-label" for="agenda-negocio">{agenda.fields.business.label}</label>
+						<input
+							class="field"
+							id="agenda-negocio"
+							name="negocio"
+							type="text"
+							required
+							autocomplete="organization"
+							placeholder={agenda.fields.business.placeholder}
+						/>
+					</div>
+
+					<div class="flex flex-col gap-1.5">
+						<label class="field-label" for="agenda-whatsapp">{agenda.fields.phone.label}</label>
+						<input
+							class="field"
+							id="agenda-whatsapp"
+							name="whatsapp"
+							type="tel"
+							required
+							inputmode="tel"
+							autocomplete="tel"
+							placeholder={agenda.fields.phone.placeholder}
+						/>
+					</div>
+
+					<fieldset class="flex flex-col gap-1.5">
+						<legend class="field-label mb-1.5">{agenda.modes.legend}</legend>
+						<div class="flex gap-2">
+							{
+								agenda.modes.options.map((mode, index) => (
+									<button
+										type="button"
+										data-mode={mode}
+										aria-pressed={index === 0 ? 'true' : 'false'}
+										class="mode-btn flex-1 rounded-lg border border-field-line px-3 py-2.5 text-[15px] font-semibold text-olive aria-pressed:border-brand-700 aria-pressed:bg-brand-700 aria-pressed:text-white"
+									>
+										{mode}
+									</button>
+								))
+							}
+						</div>
+					</fieldset>
+
+					<div class="flex flex-col gap-1.5">
+						<label class="field-label" for="agenda-plan">{agenda.planField.label}</label>
+						<select class="field" id="agenda-plan" name="plan">
+							{
+								agenda.planOptions.map((option) => (
+									<option value={option.value} selected={option.value === 'nose'}>
+										{option.label}
+									</option>
+								))
+							}
+						</select>
+					</div>
+
+					<button type="submit" class="btn btn-solid tbtn mt-1 w-full">{agenda.submit}</button>
+					<p class="text-center text-[13px] leading-[18px] text-olive">{agenda.note}</p>
+				</form>
+
+				<div data-agenda-success hidden class="flex flex-col items-center gap-3 py-6 text-center">
+					<span
+						class="grid h-16 w-16 place-items-center rounded-full bg-brand-500/15 text-brand-700"
+						style="animation: tpulse var(--pulse-duration) ease-in-out 2"
+					>
+						<LineIcon name="checkCircle" size={34} strokeWidth={2.2} />
+					</span>
+					<h2 class="h3 text-brand-700">{agenda.success.title}</h2>
+					<p class="max-w-[340px] text-body text-olive">
+						{agenda.success.body} <span data-agenda-mode></span>.
+					</p>
+					<button type="button" data-agenda-close class="btn btn-solid tbtn mt-2">{
+						agenda.close
+					}</button>
+				</div>
+
+				<div data-agenda-fallback hidden class="mt-2 rounded-lg bg-paper p-3 text-center">
+					<p class="text-[13px] leading-[18px] text-olive">
+						No pudimos abrir WhatsApp. Escríbenos directo:
+					</p>
+					<a
+						data-agenda-wa
+						href={brand.whatsapp.href}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="text-[13px] font-semibold text-brand-700"
+					>
+						{brand.whatsapp.label}
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</dialog>
+
+<style>
+	.agenda-dialog {
+		margin: auto;
+	}
+
+	.agenda-dialog::backdrop {
+		background-color: var(--color-ink-overlay);
+		backdrop-filter: blur(2px);
+	}
+
+	.agenda-dialog[open] {
+		animation: tpop var(--duration-modal) var(--ease-out-soft) both;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.agenda-dialog[open] {
+			animation: none;
+		}
+	}
+</style>
+
+<script>
+	const dialog = document.querySelector<HTMLDialogElement>('#agenda-dialog');
+	const form = dialog?.querySelector<HTMLFormElement>('[data-agenda-form]');
+	const success = dialog?.querySelector<HTMLElement>('[data-agenda-success]');
+	const fallback = dialog?.querySelector<HTMLElement>('[data-agenda-fallback]');
+	const waLink = dialog?.querySelector<HTMLAnchorElement>('[data-agenda-wa]');
+	const modeLabel = dialog?.querySelector<HTMLElement>('[data-agenda-mode]');
+	const planSelect = dialog?.querySelector<HTMLSelectElement>('#agenda-plan');
+
+	const NUMBER = '50499747054';
+
+	const selectedMode = () =>
+		dialog?.querySelector<HTMLButtonElement>('[data-mode][aria-pressed="true"]')?.dataset.mode ??
+		'Presencial';
+
+	const setMode = (mode: string) => {
+		dialog?.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((button) => {
+			button.setAttribute('aria-pressed', String(button.dataset.mode === mode));
+		});
+	};
+
+	const showForm = () => {
+		form?.removeAttribute('hidden');
+		success?.setAttribute('hidden', '');
+		fallback?.setAttribute('hidden', '');
+	};
+
+	const openDialog = (plan?: string) => {
+		if (!dialog || dialog.open) return;
+		if (plan && planSelect) planSelect.value = plan;
+		setMode(selectedMode());
+		// The header disclosure would otherwise stay open behind the dialog.
+		document.querySelectorAll('details[open]').forEach((details) => details.removeAttribute('open'));
+		dialog.showModal();
+		document.documentElement.style.overflow = 'hidden';
+	};
+
+	const closeDialog = () => dialog?.close();
+
+	document.querySelectorAll<HTMLElement>('[data-agenda-open]').forEach((trigger) => {
+		trigger.addEventListener('click', () =>
+			openDialog(trigger.dataset.plan),
+		);
+	});
+
+	dialog?.querySelectorAll('[data-agenda-close]').forEach((button) => {
+		button.addEventListener('click', closeDialog);
+	});
+
+	dialog?.querySelectorAll<HTMLButtonElement>('[data-mode]').forEach((button) => {
+		button.addEventListener('click', () => setMode(button.dataset.mode ?? 'Presencial'));
+	});
+
+	dialog?.addEventListener('click', (event) => {
+		// The dialog box itself is the only area outside the panel.
+		if (event.target === dialog) closeDialog();
+	});
+
+	dialog?.addEventListener('close', () => {
+		document.documentElement.style.overflow = '';
+		form?.reset();
+		showForm();
+	});
+
+	form?.addEventListener('submit', (event) => {
+		event.preventDefault();
+		if (!form.reportValidity()) return;
+
+		const data = new FormData(form);
+		const mode = selectedMode();
+		const plan = planSelect?.selectedOptions[0]?.textContent?.trim() ?? 'Aún no sé';
+		const message = [
+			'Hola, quiero agendar una cita con Topica.',
+			`Nombre: ${String(data.get('nombre') ?? '')}`,
+			`Negocio: ${String(data.get('negocio') ?? '')}`,
+			`WhatsApp: ${String(data.get('whatsapp') ?? '')}`,
+			`Modalidad: ${mode}`,
+			`Plan: ${plan}`,
+		].join('\n');
+
+		const url = `https://wa.me/${NUMBER}?text=${encodeURIComponent(message)}`;
+		const opened = window.open(url, '_blank');
+		if (opened) opened.opener = null;
+
+		if (opened) {
+			if (modeLabel) {
+				modeLabel.textContent = mode === 'Presencial' ? 'presencial' : 'virtual';
+			}
+			form.setAttribute('hidden', '');
+			success?.removeAttribute('hidden');
+			fallback?.setAttribute('hidden', '');
+		} else {
+			fallback?.removeAttribute('hidden');
+			if (waLink) waLink.href = url;
+		}
+	});
+
+	/* Auto-open once per session when the visitor reaches the end of the page
+	 * (S14). Disabled for reduced motion and after any manual open. */
+	const footer = document.querySelector('footer');
+	const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+	const seenKey = 'topica:agenda-popup';
+
+	if (footer && dialog && !prefersReduced && !sessionStorage.getItem(seenKey)) {
+		let timer = 0;
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const visible = entries.some((entry) => entry.isIntersecting);
+				if (visible && !timer) {
+					timer = window.setTimeout(() => {
+						sessionStorage.setItem(seenKey, '1');
+						openDialog();
+						observer.disconnect();
+					}, 2000);
+				} else if (!visible && timer) {
+					window.clearTimeout(timer);
+					timer = 0;
+				}
+			},
+			{ threshold: 0.25 },
+		);
+		observer.observe(footer);
+		dialog.addEventListener('close', () => sessionStorage.setItem(seenKey, '1'), { once: true });
+	}
+</script>
