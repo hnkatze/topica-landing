@@ -3,9 +3,10 @@
  * Sticky header (`S5`).
  *
  * Sits below the marquee bar and sticks to the viewport top once the bar scrolls
- * away. The mockup hides the nav links at <=900 without offering a replacement;
- * here they move into a native `<details>` disclosure, which is keyboard and
- * screen-reader operable with zero custom state.
+ * away. From 901px up the links sit inline with the agenda action; below that the
+ * action moves into the disclosure panel, because keeping a full pill next to the
+ * hamburger left the logo fighting for the same 390px. The panel closes itself
+ * when a section link is followed or Escape is pressed.
  */
 import { nav } from '../../content/landing';
 ---
@@ -37,14 +38,22 @@ import { nav } from '../../content/landing';
 		</nav>
 
 		<div class="flex items-center gap-2">
-			<details class="relative min-[901px]:hidden">
+			<button
+				type="button"
+				class="btn btn-primary hdrbtn tbtn hidden min-[901px]:inline-flex"
+				data-agenda-open
+			>
+				{nav.cta}
+			</button>
+
+			<details class="relative min-[901px]:hidden" data-mobile-menu>
 				<summary
-					class="flex h-touch-min w-touch-min cursor-pointer list-none items-center justify-center rounded-lg border border-palm-line text-palm [&::-webkit-details-marker]:hidden"
-					aria-label="Abrir menú de secciones"
+					class="flex h-touch w-touch cursor-pointer list-none items-center justify-center rounded-xl border border-palm-line text-palm [&::-webkit-details-marker]:hidden"
+					aria-label="Abrir menú"
 				>
 					<svg
-						width="20"
-						height="20"
+						width="22"
+						height="22"
 						viewBox="0 0 24 24"
 						fill="none"
 						stroke="currentColor"
@@ -55,26 +64,54 @@ import { nav } from '../../content/landing';
 						<path d="M4 7h16M4 12h16M4 17h16" />
 					</svg>
 				</summary>
-				<nav
-					aria-label="Secciones"
-					class="absolute end-0 top-[calc(100%+0.5rem)] z-30 flex w-56 flex-col gap-1 rounded-2xl border border-palm-line bg-ink p-3"
-				>
-					{
-						nav.links.map((link) => (
-							<a
-								href={link.href}
-								class="rounded-lg px-3 py-2.5 text-[15px] font-medium text-palm hover:bg-white/5 hover:text-white"
-							>
-								{link.label}
-							</a>
-						))
-					}
-				</nav>
-			</details>
 
-			<button type="button" class="btn btn-primary hdrbtn tbtn" data-agenda-open>
-				{nav.cta}
-			</button>
+				<div
+					class="absolute end-0 top-[calc(100%+0.75rem)] z-30 w-[min(22rem,calc(100vw-2.5rem))] overflow-hidden rounded-2xl border border-palm-line bg-ink shadow-[0_24px_48px_rgba(0,0,0,0.45)]"
+				>
+					<nav aria-label="Secciones" class="flex flex-col p-2">
+						{
+							nav.links.map((link) => (
+								<a
+									href={link.href}
+									class="rounded-lg px-3 py-3 text-[16px] font-medium text-palm hover:bg-white/5 hover:text-white"
+								>
+									{link.label}
+								</a>
+							))
+						}
+					</nav>
+
+					<div class="border-t border-palm-line p-3">
+						<button type="button" class="btn btn-primary w-full" data-agenda-open>
+							{nav.cta}
+						</button>
+					</div>
+				</div>
+			</details>
 		</div>
 	</div>
 </header>
+
+<script>
+	const menu = document.querySelector<HTMLDetailsElement>('header [data-mobile-menu]');
+
+	if (menu) {
+		// Following a section link would otherwise leave the panel covering the target.
+		menu.querySelectorAll('a').forEach((link) => {
+			link.addEventListener('click', () => {
+				menu.open = false;
+			});
+		});
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && menu.open) menu.open = false;
+		});
+
+		// Native `details` has no outside-click dismissal, which is the gesture
+		// everyone reaches for on a phone.
+		document.addEventListener('click', (event) => {
+			if (!menu.open) return;
+			if (!menu.contains(event.target as Node)) menu.open = false;
+		});
+	}
+</script>
