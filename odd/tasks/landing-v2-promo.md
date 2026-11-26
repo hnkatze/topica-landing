@@ -25,14 +25,14 @@ Replace the whole landing with the "Landing v2 · Promocional (El orden trae pro
 
 ## Tasks
 
-- [ ] **T1** — Fundación: `theme.css` con la paleta y la escala V2, `base.css`, `motion.css` con las primitivas del mockup, logo en `public/`, `content/landing.ts` con todo el copy de S4-S11. (S2, S3, S18) — commit `feat(theme): replace the design tokens with the v2 promo palette`
-- [ ] **T2** — `Layout` + `MarqueeBar` + `Header` + `Footer`. (S4, S5, S11, S17) — commit `feat(landing): add the v2 shell with marquee bar, sticky header and footer`
-- [ ] **T3** — `HeroPromo` (anillo, cubo, tiles, precio, chips, countdown, glow). (S6) — commit `feat(landing): add the v2 hero with price badge, countdown and hero art`
-- [ ] **T4** — `Beneficios` + `BigMarquee`. (S7, S8-parcial) — commit `feat(landing): add v2 benefits grid and rotated marquee`
-- [ ] **T5** — `ComoFunciona` + `Planes` + `CtaFinal`. (S8, S9, S10) — commit `feat(landing): add steps, launch pricing and final CTA`
-- [ ] **T6** — `AgendaModal` + `Fab` + envío a WhatsApp. (S12, S13, S14) — commit `feat(landing): add the agenda modal with whatsapp handoff and fab`
-- [ ] **T7** — `index.astro` recomposition, borrar las 9 secciones viejas y el `Demo` form. (S1, S17) — commit `refactor(landing): replace the mercado kraft sections with the v2 page`
-- [ ] **T8** — Verificación: build, 1440/900/640/390 sin overflow, modal accesible por teclado, reduced-motion, secciones viejas ausentes del HTML. (S15, S16)
+- [x] **T1** — Fundación: `theme.css` con la paleta y la escala V2, `base.css`, `motion.css` con las primitivas del mockup, logo en `public/`, `content/landing.ts` con todo el copy de S4-S11. (S2, S3, S18) — commit `feat(theme): replace the design tokens with the v2 promo palette`
+- [x] **T2** — `Layout` + `MarqueeBar` + `Header` + `Footer`. (S4, S5, S11, S17) — commit `feat(landing): add the v2 shell with marquee bar, sticky header and footer`
+- [x] **T3** — `HeroPromo` (anillo, cubo, tiles, precio, chips, countdown, glow). (S6) — commit `feat(landing): add the v2 hero with price badge, countdown and hero art`
+- [x] **T4** — `Beneficios` + `BigMarquee`. (S7, S8-parcial) — commit `feat(landing): add v2 benefits grid and rotated marquee`
+- [x] **T5** — `ComoFunciona` + `Planes` + `CtaFinal`. (S8, S9, S10) — commit `feat(landing): add steps, launch pricing and final CTA`
+- [x] **T6** — `AgendaModal` + `Fab` + envío a WhatsApp. (S12, S13, S14) — commit `feat(landing): add the agenda modal with whatsapp handoff and fab`
+- [x] **T7** — `index.astro` recomposition, borrar las 9 secciones viejas y el `Demo` form. (S1, S17) — commit `refactor(landing): replace the mercado kraft sections with the v2 page`
+- [x] **T8** — Verificación: build, 1440/900/640/390 sin overflow, modal accesible por teclado, reduced-motion, secciones viejas ausentes del HTML. (S15, S16)
 
 ## Log
 
