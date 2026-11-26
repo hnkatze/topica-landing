@@ -76,7 +76,12 @@ export const hero = {
 	art: {
 		ring: 'LANZAMIENTO · ',
 		cai: 'CAI ✓',
-		labels: ['Productos', 'Ecommerce'],
+		labels: {
+			cube: 'Productos',
+			cart: 'Ecommerce',
+			bag: 'Ventas',
+			globe: 'Ventas en línea',
+		},
 	},
 } as const;
 
@@ -252,6 +257,14 @@ export const agenda = {
 	submit: 'Agendar mi cita',
 	note: 'Te escribimos por WhatsApp. Sin llamadas automáticas.',
 	fab: 'Agenda tu cita',
+	perks: [
+		'Te escribimos por WhatsApp, no te llamamos',
+		'Lo ves funcionando con tus propios productos',
+		'Sin contrato forzado ni costo de instalación',
+	],
+	fallback: {
+		lead: 'No pudimos abrir WhatsApp. Escríbenos directo:',
+	},
 	success: {
 		title: '¡Listo! Recibimos tu solicitud.',
 		body: 'Te escribimos por WhatsApp en horario de oficina para confirmar el día y la hora de tu cita',

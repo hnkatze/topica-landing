@@ -100,15 +100,3 @@
 		}
 	}
 }
-
-/* The display family belongs to every display-scale token, so markup never has
- * to repeat `font-display`. */
-@layer components {
-	.text-display,
-	.text-h2,
-	.text-h3,
-	.text-price,
-	.text-step {
-		font-family: var(--font-display);
-	}
-}

@@ -18,7 +18,7 @@ const chipIcons = ['cart', 'globe', 'box', 'bag'] as const;
 const tiles = [
 	{
 		icon: 'cart' as const,
-		label: 'Ecommerce',
+		label: hero.art.labels.cart,
 		style: 'left:13%;top:430px',
 		size: 112,
 		radius: 31,
@@ -30,7 +30,7 @@ const tiles = [
 	},
 	{
 		icon: 'bag' as const,
-		label: 'Ventas',
+		label: hero.art.labels.bag,
 		style: 'right:6%;top:90px',
 		size: 124,
 		radius: 34,
@@ -42,7 +42,7 @@ const tiles = [
 	},
 	{
 		icon: 'globe' as const,
-		label: 'Ventas en línea',
+		label: hero.art.labels.globe,
 		style: 'right:15%;top:360px',
 		size: 104,
 		radius: 29,
@@ -74,18 +74,21 @@ const tiles = [
 			<span
 				class="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-palm px-2.5 py-1 text-[10px] font-extrabold tracking-[0.08em] whitespace-nowrap text-ink uppercase shadow-label"
 			>
-				Productos
+				{hero.art.labels.cube}
 			</span>
 		</div>
 
 		{
 			tiles.map((tile) => (
 				<div class="absolute" style={tile.style}>
-					<span
-						class:list={['puff grid place-items-center', tile.bg, tile.fg]}
-						style={`width:${tile.size}px;height:${tile.size}px;border-radius:${tile.radius}px;transform:rotate(${tile.rotate});animation:tfloat var(--float-duration) ease-in-out ${tile.delay} infinite`}
-					>
-						<LineIcon name={tile.icon} size={tile.iconSize} strokeWidth={2.2} />
+					{/* Rotation lives on the wrapper: the float keyframes own `transform`. */}
+					<span class="block" style={`transform:rotate(${tile.rotate})`}>
+						<span
+							class:list={['puff grid place-items-center', tile.bg, tile.fg]}
+							style={`width:${tile.size}px;height:${tile.size}px;border-radius:${tile.radius}px;animation:tfloat var(--float-duration) ease-in-out ${tile.delay} infinite`}
+						>
+							<LineIcon name={tile.icon} size={tile.iconSize} strokeWidth={2.2} />
+						</span>
 					</span>
 					<span
 						class="absolute -bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-palm px-2.5 py-1 text-[10px] font-extrabold tracking-[0.08em] whitespace-nowrap text-ink uppercase shadow-label"
