@@ -2,9 +2,33 @@
 /**
  * Beneficios (`S7`): four cards on one auto-fit grid, the fourth on the ink
  * surface because it is the plan-gated feature (`Plan Pyme`).
+ *
+ * Each icon tile carries its own loop, as in the mockup: a wobble, a float and a
+ * pulse, plus a self-drawing chart line (`tdraw`). The motion is decorative and
+ * never gates the card's content.
  */
 import LineIcon from '../LineIcon.astro';
 import { benefits } from '../../content/landing';
+
+const tileLook = {
+	clipboard: {
+		tile: 'bg-brand-700 text-white',
+		motion: 'twob 4s ease-in-out infinite',
+	},
+	boxes: {
+		tile: 'bg-brand-700 text-white',
+		motion: 'tfloat 3.4s ease-in-out infinite 0.4s',
+	},
+	chart: {
+		tile: 'bg-brand-500 text-ink',
+		motion: 'tpulse 2.8s ease-in-out infinite',
+		draw: true,
+	},
+	receipt: {
+		tile: 'bg-white/10 text-brand-500',
+		motion: 'twob 5s ease-in-out infinite',
+	},
+} as const;
 ---
 
 <section id="beneficios" class="sec pad bg-paper">
@@ -22,6 +46,7 @@ import { benefits } from '../../content/landing';
 			{
 				benefits.items.map((item, index) => {
 					const dark = 'dark' in item && item.dark;
+					const look = tileLook[item.icon];
 					return (
 						<article
 							class:list={[
@@ -30,13 +55,12 @@ import { benefits } from '../../content/landing';
 							]}
 							style={`animation-delay: ${index * 60}ms`}
 						>
-							<span
-								class:list={[
-									'icon-tile',
-									dark ? 'bg-white/10 text-brand-500' : 'bg-brand-700/10 text-brand-700',
-								]}
-							>
-								<LineIcon name={item.icon} size={24} />
+							<span class:list={['icon-tile', look.tile]} style={`animation: ${look.motion}`}>
+								<LineIcon
+									name={item.icon}
+									size={26}
+									class={'draw' in look && look.draw ? 'icon-draw' : undefined}
+								/>
 							</span>
 
 							{'pill' in item && item.pill && (

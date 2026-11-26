@@ -203,6 +203,12 @@
 		);
 		box-shadow: var(--shadow-puff);
 	}
+
+	/* Self-drawing stroke, as the mockup does on its chart glyph. */
+	.icon-draw path:last-child {
+		stroke-dasharray: 30;
+		animation: tdraw 2.6s ease-in-out infinite;
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
