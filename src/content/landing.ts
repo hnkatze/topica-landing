@@ -161,7 +161,10 @@ export const pricing = {
 	eyebrow: 'Planes',
 	title: 'Aprovecha el precio de lanzamiento',
 	lead: 'Precios claros, en lempiras y sin sorpresas al final.',
-	gift: 'Lanzamiento: te acompañamos a cargar tu catálogo.',
+	gift: {
+		label: 'Lanzamiento',
+		body: 'te acompañamos a cargar tu catálogo.',
+	},
 	cta: 'Quiero este plan',
 	note: 'Precio mensual en lempiras.',
 	help: '¿No sabes cuál elegir? Agenda una cita y te ayudamos a decidir.',

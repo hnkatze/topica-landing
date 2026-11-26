@@ -5,6 +5,7 @@
  * white and keeps the ink price. Both open the agenda modal carrying their plan.
  */
 import LineIcon from '../LineIcon.astro';
+import PlanGift from '../PlanGift.astro';
 import { pricing } from '../../content/landing';
 ---
 
@@ -85,20 +86,7 @@ import { pricing } from '../../content/landing';
 							})}
 						</ul>
 
-						<div
-							class:list={[
-								'mt-6 flex items-start gap-2 text-[13px] leading-[18px]',
-								plan.featured ? 'text-palm' : 'text-olive',
-							]}
-						>
-							<LineIcon
-								name="gift"
-								size={18}
-								class="mt-px shrink-0 text-brand-500"
-								style="animation: tgift var(--gift-duration) ease-in-out infinite"
-							/>
-							<span>{pricing.gift}</span>
-						</div>
+						<PlanGift featured={plan.featured} />
 
 						<button
 							type="button"

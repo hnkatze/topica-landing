@@ -1,0 +1,48 @@
+---
+/**
+ * Launch perk (`S9`) — the onboarding gift both plans carry.
+ *
+ * The mockup renders it as a bare line of text next to a gift glyph. It is a
+ * different promise from the feature list, so it gets its own surface: a soft
+ * box with the label as an eyebrow and the promise as body, and the gift glyph
+ * keeps the design's own wiggle. Two skins, because the featured plan sits on
+ * the ink surface.
+ */
+import LineIcon from './LineIcon.astro';
+import { pricing } from '../content/landing';
+
+interface Props {
+	/** Featured plan: the box sits on ink, not on white. */
+	featured?: boolean;
+}
+
+const { featured = false } = Astro.props;
+---
+
+<div
+	class:list={[
+		'mt-6 flex items-center gap-3 rounded-xl border p-3.5',
+		featured ? 'border-palm-line bg-white/5' : 'border-hairline bg-palm-chip',
+	]}
+>
+	<span
+		class:list={[
+			'grid h-9 w-9 shrink-0 place-items-center rounded-lg',
+			featured ? 'bg-brand-500/15 text-brand-500' : 'bg-brand-700/10 text-brand-700',
+		]}
+	>
+		<LineIcon
+			name="gift"
+			size={18}
+			strokeWidth={2.2}
+			style="animation: tgift var(--gift-duration) ease-in-out infinite"
+		/>
+	</span>
+
+	<p class:list={['text-[13px] leading-[18px]', featured ? 'text-palm/80' : 'text-olive']}>
+		<span class:list={['font-extrabold', featured ? 'text-brand-500' : 'text-brand-700']}>
+			{pricing.gift.label}:
+		</span>{' '}
+		{pricing.gift.body}
+	</p>
+</div>
