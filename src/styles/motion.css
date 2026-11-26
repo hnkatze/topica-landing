@@ -1,194 +1,219 @@
-/* Motion primitives — CSS transitions + one IntersectionObserver.
- * Tier 1-2 of the animation ladder: no motion library (see L4 in
- * odd/tasks/landing-foundation.md). Only transform/opacity are animated,
- * with the documented exception of the FAQ height transition in base styles. */
+/* Motion primitives — the v2 mockup's own keyframes and interaction classes,
+ * ported one-to-one. Only transform/opacity are animated, with the documented
+ * exception of the hero glow's opacity.
+ *
+ * Scroll reveal uses CSS `animation-timeline: view()` inside @supports: browsers
+ * without support show the final state immediately, so content is never hidden
+ * by a failed animation (and no JS observer is needed). */
 
-@theme {
-	--animate-fade-up: fade-up var(--duration-enter) var(--ease-out-soft) both;
-	--animate-fade-in: fade-in var(--duration-enter) var(--ease-out-soft) both;
-	--animate-scale-in: scale-in var(--duration-base) var(--ease-out-soft) both;
-	--animate-float-soft: float-soft var(--float-soft-duration) ease-in-out infinite;
-	--animate-float-card: float-card var(--float-card-duration) ease-in-out 0.8s infinite;
-	--animate-radar: radar var(--radar-duration) var(--ease-radar) infinite;
-	--animate-shimmer: shimmer var(--shimmer-duration) ease-in-out infinite;
-
-	@keyframes fade-up {
-		from {
-			opacity: 0;
-			transform: translateY(var(--reveal-y));
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
+@keyframes tstar {
+	0%,
+	100% {
+		transform: rotate(-12deg) scale(1);
 	}
-
-	@keyframes fade-in {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
+	50% {
+		transform: rotate(-2deg) scale(1.07);
 	}
+}
 
-	@keyframes scale-in {
-		from {
-			opacity: 0;
-			transform: scale(0.96);
-		}
-		to {
-			opacity: 1;
-			transform: scale(1);
-		}
+@keyframes tfloat {
+	0%,
+	100% {
+		transform: translateY(0);
 	}
-
-	/* Hero props: the packed parcel and the panel float against each other */
-	@keyframes float-soft {
-		0%,
-		100% {
-			transform: translateY(0) rotate(0deg);
-		}
-		50% {
-			transform: translateY(-7px) rotate(0.4deg);
-		}
+	50% {
+		transform: translateY(-16px);
 	}
+}
 
-	@keyframes float-card {
-		0%,
-		100% {
-			transform: translateY(0) rotate(0deg);
-		}
-		50% {
-			transform: translateY(-9px) rotate(-0.5deg);
-		}
+@keyframes tfloat2 {
+	0%,
+	100% {
+		transform: translateY(0) rotate(0);
 	}
-
-	/* "En vivo" dot: an expanding ring in currentColor */
-	@keyframes radar {
-		0% {
-			transform: scale(0.95);
-			opacity: 0.9;
-		}
-		50% {
-			transform: scale(1.4);
-			opacity: 0;
-		}
-		100% {
-			transform: scale(0.95);
-			opacity: 0;
-		}
+	50% {
+		transform: translateY(12px) rotate(4deg);
 	}
+}
 
-	/* Light sweep across the primary action */
-	@keyframes shimmer {
-		0% {
-			transform: translateX(-150%);
-		}
-		100% {
-			transform: translateX(200%);
-		}
+@keyframes tpulse {
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.1);
+	}
+}
+
+@keyframes twob {
+	0%,
+	100% {
+		transform: rotate(0);
+	}
+	25% {
+		transform: rotate(-8deg);
+	}
+	75% {
+		transform: rotate(8deg);
+	}
+}
+
+@keyframes tdraw {
+	0% {
+		stroke-dashoffset: 30;
+	}
+	60%,
+	100% {
+		stroke-dashoffset: 0;
+	}
+}
+
+@keyframes tin {
+	from {
+		opacity: 0;
+		transform: translateY(var(--load-y));
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes tfade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes tpop {
+	from {
+		opacity: 0;
+		transform: translateY(var(--pop-y)) scale(0.97);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes tmarq {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+@keyframes tspin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes tring {
+	0% {
+		box-shadow: 0 0 0 0 var(--color-ring-shadow);
+	}
+	100% {
+		box-shadow: 0 0 0 22px rgb(18 171 77 / 0);
+	}
+}
+
+@keyframes tglow {
+	0%,
+	100% {
+		opacity: 0.55;
+	}
+	50% {
+		opacity: 0.85;
+	}
+}
+
+@keyframes tgift {
+	0%,
+	100% {
+		transform: rotate(0);
+	}
+	10% {
+		transform: rotate(-14deg);
+	}
+	20% {
+		transform: rotate(12deg);
+	}
+	30% {
+		transform: rotate(0);
 	}
 }
 
 @layer components {
-	/* Reveal-on-scroll. The hidden state only exists once the observer booted
-	 * (`motion-ready` on <html>), so a JS failure never hides content. */
-	.reveal {
-		opacity: 1;
-		transform: none;
+	/* Entrance cascade. Delays are per-element via `--load-delay`. */
+	.tload {
+		animation: tin var(--duration-enter) var(--ease-out-soft) both;
+		animation-delay: var(--load-delay, 0s);
 	}
 
-	.motion-ready .reveal {
-		opacity: 0;
-		transform: translateY(var(--reveal-y));
-		transition:
-			opacity var(--duration-slow) var(--ease-out-soft),
-			transform var(--duration-slow) var(--ease-out-soft);
-		transition-delay: calc(var(--i, 0) * var(--reveal-stagger));
-		will-change: opacity, transform;
-	}
-
-	.motion-ready .reveal.is-visible {
-		opacity: 1;
-		transform: none;
-		will-change: auto;
-	}
-
-	/* Press and hover feedback for counter and catalogue targets. */
-	.press {
-		transition: transform var(--duration-micro) var(--ease-out-soft);
-	}
-
-	.press:active {
-		transform: scale(0.985);
-	}
-
-	.lift {
-		transition:
-			transform var(--duration-base) var(--ease-out-soft),
-			box-shadow var(--duration-base) var(--ease-out-soft);
-	}
-
-	@media (hover: hover) {
-		.lift:hover {
-			transform: translateY(-2px);
-			box-shadow: var(--shadow-counter);
+	/* Scroll reveal. Without support for `animation-timeline` the class has no
+	 * rules at all, so content is simply visible: a failed animation can never
+	 * hide a section. */
+	@supports (animation-timeline: view()) {
+		.reveal {
+			animation: tin linear both;
+			animation-timeline: view();
+			animation-range: entry 0% cover 28%;
 		}
 	}
 
-	/* Live indicator used by the hero panel and the eyebrow pulse. */
-	.radar-pulse {
-		position: relative;
+	.tcard {
+		transition:
+			transform var(--duration-base) ease,
+			box-shadow var(--duration-base) ease;
 	}
 
-	.radar-pulse::after {
-		content: '';
-		position: absolute;
-		inset: -4px;
-		border-radius: 9999px;
-		background-color: currentColor;
-		animation: var(--animate-radar);
+	.tbtn {
+		transition:
+			transform var(--duration-micro) ease,
+			filter var(--duration-micro) ease;
+		cursor: pointer;
 	}
 
-	/* Light sweep on the primary action. The ::after is decorative only. */
-	.btn-shimmer {
-		position: relative;
-		overflow: hidden;
+	@media (hover: hover) {
+		.tcard:hover {
+			transform: translateY(-6px);
+			box-shadow: var(--shadow-card-hover);
+		}
+
+		.tbtn:hover {
+			transform: translateY(-2px);
+			filter: brightness(1.08);
+		}
 	}
 
-	.btn-shimmer::after {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 60%;
-		height: 100%;
-		background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.28), transparent);
-		transform: translateX(-150%);
-		animation: var(--animate-shimmer);
-		pointer-events: none;
+	/* The hero props' plastic look: a specular highlight, two inset shades and a
+	 * grounded contact shadow. Tile rotation stays in the component. */
+	.puff {
+		background-image: radial-gradient(
+			circle at 30% 25%,
+			rgb(255 255 255 / 0.55),
+			rgb(255 255 255 / 0) 42%
+		);
+		box-shadow: var(--shadow-puff);
 	}
 }
 
-/* Global reduced-motion floor. Effects that carry meaning land on their final
- * state instead of disappearing. */
 @media (prefers-reduced-motion: reduce) {
 	*,
-	::before,
-	::after {
-		animation-duration: 0.01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
-		scroll-behavior: auto !important;
+	*::before,
+	*::after {
+		animation: none !important;
+		transition: none !important;
 	}
 
-	.motion-ready .reveal {
-		opacity: 1 !important;
-		transform: none !important;
-	}
-
-	.lift:hover {
-		transform: none !important;
+	html {
+		scroll-behavior: auto;
 	}
 }
