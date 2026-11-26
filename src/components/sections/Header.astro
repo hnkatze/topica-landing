@@ -1,0 +1,80 @@
+---
+/**
+ * Sticky header (`S5`).
+ *
+ * Sits below the marquee bar and sticks to the viewport top once the bar scrolls
+ * away. The mockup hides the nav links at <=900 without offering a replacement;
+ * here they move into a native `<details>` disclosure, which is keyboard and
+ * screen-reader operable with zero custom state.
+ */
+import { nav } from '../../content/landing';
+---
+
+<header class="sticky top-0 z-20 bg-ink-header backdrop-blur-md">
+	<div class="flex items-center justify-between gap-3 px-5 py-4 sm:px-12">
+		<a href="/" class="flex items-center" aria-label="Topica — inicio">
+			<img
+				src="/logo-topica-white.svg"
+				alt="Topica"
+				width="125"
+				height="40"
+				class="h-10 w-auto"
+				decoding="async"
+			/>
+		</a>
+
+		<nav aria-label="Secciones" class="nav-links">
+			{
+				nav.links.map((link) => (
+					<a
+						href={link.href}
+						class="text-[15px] font-medium text-palm transition-colors hover:text-white"
+					>
+						{link.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<div class="flex items-center gap-2">
+			<details class="relative min-[901px]:hidden">
+				<summary
+					class="flex h-touch-min w-touch-min cursor-pointer list-none items-center justify-center rounded-lg border border-palm-line text-palm [&::-webkit-details-marker]:hidden"
+					aria-label="Abrir menú de secciones"
+				>
+					<svg
+						width="20"
+						height="20"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						aria-hidden="true"
+					>
+						<path d="M4 7h16M4 12h16M4 17h16" />
+					</svg>
+				</summary>
+				<nav
+					aria-label="Secciones"
+					class="absolute end-0 top-[calc(100%+0.5rem)] z-30 flex w-56 flex-col gap-1 rounded-2xl border border-palm-line bg-ink p-3"
+				>
+					{
+						nav.links.map((link) => (
+							<a
+								href={link.href}
+								class="rounded-lg px-3 py-2.5 text-[15px] font-medium text-palm hover:bg-white/5 hover:text-white"
+							>
+								{link.label}
+							</a>
+						))
+					}
+				</nav>
+			</details>
+
+			<button type="button" class="btn btn-primary hdrbtn tbtn" data-agenda-open>
+				{nav.cta}
+			</button>
+		</div>
+	</div>
+</header>

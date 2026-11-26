@@ -1,0 +1,32 @@
+---
+/**
+ * Launch-price marquee bar (`S4`).
+ *
+ * The track holds the same item sequence twice and animates by -50%, which is
+ * exactly one copy: the loop is seamless with no JS and no layout thrash. The
+ * second copy is aria-hidden so the announcement is not read twice, and the
+ * whole strip carries the readable label the mockup declares.
+ */
+import { promo } from '../../content/landing';
+
+const items = Array.from({ length: promo.bar.repeats }, () => promo.bar.items).flat();
+---
+
+<div role="region" aria-label={promo.bar.label} class="overflow-hidden bg-brand-500 text-ink">
+	<div class="marquee-track py-2.5">
+		{
+			[0, 1].map((copy) => (
+				<span class="flex items-center gap-[18px]" aria-hidden={copy === 1 ? 'true' : undefined}>
+					{items.map((item) => (
+						<span class="flex items-center gap-[18px]">
+							<span class="text-[13px] font-extrabold uppercase tracking-[0.06em] whitespace-nowrap">
+								{item}
+							</span>
+							<span class="h-2 w-2 rounded-full bg-ink" />
+						</span>
+					))}
+				</span>
+			))
+		}
+	</div>
+</div>
