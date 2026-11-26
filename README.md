@@ -1,8 +1,9 @@
 # Topica — landing
 
-Sitio público de Topica: catálogo, inventario y envíos para comercios
-independientes. Astro estático + Tailwind CSS v4 + CSS/JS nativo para el
-movimiento.
+Sitio público de Topica: catálogo, inventario y facturación para comercios en
+línea. Astro estático + Tailwind CSS v4, con el copy de la campaña
+"El orden trae prosperidad". Todo el movimiento es CSS salvo dos scripts
+pequeños y nativos.
 
 ## Comandos
 
@@ -17,66 +18,165 @@ npm run sync-fonts   # re-copia los woff2 latin desde @fontsource-variable
 ## Estructura
 
 ```text
-design/stitch/mercado-kraft.md   sistema de diseño de origen (Stitch, verbatim)
+design/v2-promo/                 export del mockup v2 (referencia visual, no código)
+design/stitch/mercado-kraft.md   sistema del sitio anterior (histórico)
 odd/tasks/                       especificación y estado de cada entrega
 public/fonts/                    woff2 variable, subset latin
-src/styles/theme.css             tokens: color, tipografía, forma, elevación, motion
+public/logo-topica-white.svg     logo: wordmark blanco, solo fondos ink
+scripts/sync-fonts.mjs           copia los woff2 latin a public/fonts/
+src/styles/global.css            entrada: Tailwind + las capas de abajo
+src/styles/theme.css             tokens v2: color, tipografía, forma, elevación
 src/styles/base.css              defaults de elemento y binding de familias
-src/styles/motion.css            keyframes, .reveal, .press, .lift, reduced-motion
+src/styles/v2.css                primitivas de layout/tipografía y breakpoints
+src/styles/motion.css            keyframes, .tload, .reveal, .tcard, .tbtn, .puff
 src/styles/fonts.css             @font-face auto-hospedado
-src/scripts/motion.ts            IntersectionObserver de un solo uso
-src/components/Icon.astro        primitiva de iconos (lucide + simple-icons)
-src/layouts/Layout.astro         head, fuentes, skip link, boot de motion
-src/pages/styleguide.astro       vitrina de tokens (/styleguide, noindex)
-scripts/sync-fonts.mjs         copia los woff2 latin a public/fonts/
+src/content/landing.ts           todo el copy, los precios y el contacto
+src/components/LineIcon.astro    registro de iconos de trazo
+src/components/sections/         secciones de la página + AgendaModal + Fab
+src/layouts/Layout.astro         head, preload de fuentes, skip link
+src/pages/index.astro            composición de la página y JSON-LD
 ```
+
+## Secciones
+
+En orden de documento. Todas leen su copy de `src/content/landing.ts`.
+
+| Componente         | Qué es                                                                |
+| ------------------ | --------------------------------------------------------------------- |
+| `MarqueeBar`       | barra verde fija arriba, 4 mensajes repetidos, `aria-label` propio    |
+| `Header`           | sticky sobre ink: logo 40px, 3 links, CTA pill, disclosure ≤900px     |
+| `Hero`             | `#hero`: h1 con acento, badge `DESDE` + precio, chips, countdown, arte |
+| `Beneficios`       | `#beneficios`: 4 tarjetas (la de CAI es oscura, pill `Plan Pyme`)      |
+| `BigMarquee`       | marquee rotado `-1.5deg`, 6 repeticiones, recortado en su contenedor   |
+| `ComoFunciona`     | `#como-funciona`: 3 pasos numerados + CTA `Agenda una cita`            |
+| `Planes`           | `#planes`: 2 planes, features marcadas incluidas/excluidas             |
+| `CtaFinal`         | caja oscura `ctabox` con el CTA de cierre                              |
+| `Footer`           | columnas `Página` / `Contacto`, legal, logo 44px                       |
+| `AgendaModal`      | `<dialog>` con el formulario, el éxito y el fallback a WhatsApp        |
+| `Fab`              | botón flotante `Agenda tu cita` (vive dentro de `AgendaModal`)         |
 
 ## Sistema de diseño
 
-Los tokens provienen del sistema **Mercado Kraft** exportado de Stitch y viven
-en `src/styles/theme.css`. La fuente de verdad completa está en
-`design/stitch/mercado-kraft.md`; no editar ese archivo a mano. Los nombres
-siguen los del sistema para que el markup de Stitch se pueda portar sin
-traducciones.
+Los tokens están en `src/styles/theme.css` y son semánticos: el markup se lee
+igual que el mockup. Paleta v2:
 
-- **Color:** `primary` / `primary-container` (acción sólida y su hover),
-  `secondary` (logística), `tertiary` (waybills), y la escalera tonal de
-  superficies en la que alternan las secciones: `background` → `surface-low` →
-  `surface-container` → `surface-high`. El bloque de envíos es el único que usa
-  `kraft-surface`. Estados: `paid`, `pending`, `whatsapp`, `danger`.
-- **Tipografía:** `text-hero` y `headline-*` → Plus Jakarta Sans; `body-*` y
-  `label-*` → Inter; `correlative` y `currency` → JetBrains Mono con cifras
-  tabulares. Las familias se aplican solas, no hace falta escribir
-  `font-display` a mano.
-- **Forma:** `rounded-xs` (tags fiscales) a `rounded-xl` (waybills, CTAs). Touch
-  targets: `h-touch` (48px) y `h-touch-min` (44px).
-- **Elevación:** `shadow-card` (L1), `shadow-counter` (L3, acción fija),
-  `shadow-paper` (maquetas del hero), `shadow-hairline` (borde interior de botón
-  primario).
+| Token         | Hex       | Uso                                                  |
+| ------------- | --------- | ---------------------------------------------------- |
+| `ink`         | `#16200c` | texto, header, hero, marquee grande, tarjeta oscura   |
+| `ink-soft`    | `#4b5226` | texto ink intermedio                                 |
+| `brand-500`   | `#12ab4d` | CTA sólido, fab, barra superior, pills de precio     |
+| `brand-700`   | `#0b7a35` | eyebrows, tiles, números de paso, submit del modal   |
+| `olive`       | `#636b32` | cuerpo, subheads, formas decorativas                 |
+| `palm`        | `#cbc995` | subcopy del hero, `/mes`, links del footer           |
+| `muted`       | `#8c8e6e` | features excluidas, placeholders                     |
+| `paper`       | `#fafaf7` | fondo de página, tarjetas de paso, cierre del modal  |
+| `card`        | `#ffffff` | tarjetas y campos                                     |
+
+Las tintas (`hairline`, `palm-line`, `ink-overlay`, `glow`…) son los `rgba`
+literales del mockup, con nombre.
+
+Escala tipográfica. Plus Jakarta Sans 800 para títulos, precios y pasos;
+Inter para cuerpo, labels, nav y botones:
+
+| Token     | Valor                                      |
+| --------- | ------------------------------------------ |
+| `display` | 96px / 0.98, `-0.045em`                    |
+| `h2`      | 44px / 1.1, `-0.03em` (CTA final 48px/1.08) |
+| `h3`      | 22px / 28px                                |
+| `price`   | 60px / 1, `-0.04em`                        |
+| `step`    | 56px / 1, `-0.04em`                        |
+| `lead`    | 21px / 31px                                |
+| `sub`     | 18px / 28px                                |
+| `meta`    | 15px / 22px                                |
+| `eyebrow` | 12px / 700, `.08em`, mayúsculas            |
+
+Breakpoints, los del mockup: **1180** oculta el arte del hero, **900** lleva
+h1 a 56px y h2 a 36px y esconde los links del header (los sustituye un
+`<details>` propio), **640** h1 40px / h2 30px, padding 20px y 64px, precio y
+CTAs reducidos.
+
+Layout y tipografía viven como primitivas en `src/styles/v2.css` para que los
+componentes solo pongan estructura: `.pad`, `.sec`, `.wrap*`, `.h1`, `.h2`,
+`.h3`, `.lead`, `.sub`, `.eyebrow`, `.pricepill`, `.desde` (estrella de 36
+puntos con `clip-path`), `.timer-cell`, `.cardpad`, `.ctabox`, `.bigmarq`,
+`.fab`, `.modalpad`, `.field`.
 
 ## Movimiento
 
-Dos capas, sin librerías:
+`src/styles/motion.css`, sin librerías ni observers de scroll:
 
-1. **CSS** — `animate-fade-up`, `animate-fade-in`, `animate-scale-in`, más los
-   bucles del diseño (`animate-float-soft`, `animate-float-card`,
-   `animate-radar`), `.press` (feedback al presionar), `.lift` (hover en
-   tarjetas) y `.btn-shimmer` (barrido de luz en el CTA primario).
-2. **JS** — un `IntersectionObserver` que revela `[data-reveal]` una sola vez,
-   escalonable con `style="--i:2"`.
+- **Keyframes** `t*` del mockup: `tstar`, `tfloat`, `tfloat2`, `tpulse`,
+  `twob`, `tdraw`, `tin`, `tfade`, `tpop`, `tmarq`, `tspin`, `tring`,
+  `tglow`, `tgift`. Solo animan transform/opacity, salvo el glow del hero.
+- **`.tload`** — cascada de entrada con delays por elemento (`--load-delay`).
+- **`.reveal`** — scroll-driven: `animation-timeline: view()` dentro de
+  `@supports`. Sin soporte la clase no tiene reglas, así que el contenido se
+  ve siempre; nunca hay estado oculto previo ni JS que lo revele.
+- **`.tcard`** (`translateY(-6px)` + sombra) y **`.tbtn`** (`-2px` +
+  `brightness(1.08)`), solo con `hover: hover`. **`.puff`** es el brillo
+  plástico de las piezas del hero.
+- `prefers-reduced-motion: reduce` apaga animaciones, transiciones y scroll
+  suave de toda la página.
 
-Todo respeta `prefers-reduced-motion`: el estado final se muestra de inmediato
-y el contenido nunca queda oculto si el JS falla (la clase `motion-ready` la
-pone el script).
+No existe `IntersectionObserver` para revelar secciones. El único JS de cliente
+es el countdown del hero (en `Hero.astro`) y el script del diálogo de agenda.
 
 ## Iconos
 
-`<Icon name="material-symbols:package-2" size={20} />`. Sets disponibles:
-`material-symbols:*` para UI — la familia del diseño — y `simple-icons:*` para
-marcas (WhatsApp). SVG inline en build: sin fetch, sin icon font, sin JS extra.
-Marcas propias en `src/icons/`.
+`src/components/LineIcon.astro` es un registro fijo de trazos 24×24
+(`stroke-width` 2 por defecto, tapas redondas) cuyos paths se inyectan con
+`set:html` desde un record — nunca desde datos de usuario. Nombres:
+`cart`, `box`, `globe`, `bag`, `shield`, `zap`, `clipboard`, `boxes`, `chart`,
+`receipt`, `calendar`, `gift`, `mail`, `pin`, `close`, `check`, `checkCircle`,
+`arrowRight`.
+
+```astro
+<LineIcon name="calendar" size={18} />
+```
+
+Sin icon font, sin fetch y sin dependencia de iconos. `@iconify-json/*` y
+`astro-icon` siguen en `package.json` (e `icon()` en `astro.config.mjs`) por
+herencia del sitio anterior; la landing ya no los usa.
+
+## Conversión
+
+El modal de agenda es un `<dialog>` nativo: `showModal()` da gratis la trampa
+de foco, `Escape`, el fondo inerte y la devolución del foco al disparador. La
+validación es la nativa (`required` en nombre, negocio y WhatsApp;
+`reportValidity()` al enviar). Los toggles `Presencial` / `Virtual` son botones
+con `aria-pressed`.
+
+El submit no finge éxito: abre `https://wa.me/50499747054` en pestaña nueva con
+un mensaje prellenado (nombre, negocio, WhatsApp, modalidad y plan) y solo
+entonces muestra el estado de éxito. Si el navegador bloquea la ventana, el
+formulario se queda y aparece el link directo a WhatsApp.
+
+Después del footer el modal se abre solo **una vez por sesión**
+(`sessionStorage`) 2s después de que el footer entra en viewport. Se cancela si
+el usuario ya lo abrió o cerró, y queda desactivado con `prefers-reduced-motion`.
+
+## Contenido y precios
+
+Un solo módulo, `src/content/landing.ts`: el copy de todas las secciones, el
+contacto (`brand`), el SEO y el enlace de WhatsApp. Los precios de lanzamiento
+son `L 399` (Básico Emprendedor) y `L 699` (Pyme); `promo.fromPrice` alimenta
+el badge del hero y el countdown, y `promo.bar.items` repite el mismo precio en
+la barra superior. Para cambiar copy o precio se edita ese módulo: los
+componentes no escriben texto.
+
+## Assets
+
+- `public/logo-topica-white.svg` — wordmark blanco del mockup. Solo sobre
+  superficies ink; sobre claro no se usa.
+- `public/fonts/*.woff2` — Plus Jakarta Sans, Inter y JetBrains Mono, subset
+  latin, auto-hospedados y regenerables con `npm run sync-fonts`. El mono solo
+  queda como default de `code`/`pre` en `base.css`; la landing no lo usa.
+- `design/v2-promo/` — export del mockup (`LandingPromo.dc.html`) con los
+  valores exactos. Es referencia, no código a copiar.
 
 ## Estado
 
-Capa global lista. Las secciones de la landing se construyen en la siguiente
-entrega — ver `odd/tasks/landing-foundation.md`.
+Landing v2 completa según `odd/tasks/landing-v2-promo.md` (S1-S18). El sistema
+`design/stitch/mercado-kraft.md` es histórico: se conserva como registro y ya
+no define ningún token. Si un valor de diseño cambia, la fuente de verdad es
+`src/styles/theme.css` más el mockup en `design/v2-promo/`.
